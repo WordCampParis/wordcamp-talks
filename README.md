@@ -45,7 +45,7 @@ The WordCamp Talk Proposals plugin comes with two new roles :
 If you're familiar with git you can simply go at the root of you plugins directory and do:
 
 ```
-git clone https://github.com/imath/wordcamp-talks.git
+git clone https://github.com/WordCampParis/wordcamp-talks.git
 
 ```
 

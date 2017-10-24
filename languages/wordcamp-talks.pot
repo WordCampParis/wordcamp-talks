@@ -2,15 +2,16 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talk Proposals 1.1.0-beta1\n"
-"Report-Msgid-Bugs-To: https://github.com/imath/wordcamp-talks/issues\n"
-"POT-Creation-Date: 2017-10-17 21:18:47+00:00\n"
+"Project-Id-Version: WordCamp Talk Proposals 1.1.0\n"
+"Report-Msgid-Bugs-To: "
+"https://github.com/WordCampParis/wordcamp-talks/issues\n"
+"POT-Creation-Date: 2017-10-24 03:10:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
-"Last-Translator: imath <imath@cluster.press>\n"
-"Language-Team: FRENCH <imath@cluster.press>\n"
+"Last-Translator: imath <contact@imathi.eu>\n"
+"Language-Team: FRENCH <contact@imathi.eu>\n"
 "X-Generator: grunt-wp-i18n 0.5.4\n"
 
 #: includes/admin/classes/class-wordcamp-talks-admin-comments.php:137
@@ -1441,7 +1442,7 @@ msgid "WordCamp Talk Proposals"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/imath/wordcamp-talks/"
+msgid "https://github.com/WordCampParis/wordcamp-talks/"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -1586,14 +1587,14 @@ msgctxt "Title of the main archive page."
 msgid "Talk Proposals"
 msgstr ""
 
-#: includes/core/functions.php:1387
+#: includes/core/functions.php:1396
 msgctxt "talks tag cloud count text"
 msgid "%s Talk Proposal"
 msgid_plural "%s Talk Proposals"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/core/functions.php:1530
+#: includes/core/functions.php:1539
 msgctxt "Admin bar menu"
 msgid "WordCamp Talk Proposals"
 msgstr ""

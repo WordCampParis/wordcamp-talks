@@ -50,9 +50,9 @@ module.exports = function( grunt ) {
 					mainFile: 'wordcamp-talks.php',
 					potFilename: 'wordcamp-talks.pot',
 					processPot: function( pot ) {
-						pot.headers['last-translator']      = 'imath <imath@cluster.press>';
-						pot.headers['language-team']        = 'FRENCH <imath@cluster.press>';
-						pot.headers['report-msgid-bugs-to'] = 'https://github.com/imath/wordcamp-talks/issues';
+						pot.headers['last-translator']      = 'imath <contact@imathi.eu>';
+						pot.headers['language-team']        = 'FRENCH <contact@imathi.eu>';
+						pot.headers['report-msgid-bugs-to'] = 'https://github.com/WordCampParis/wordcamp-talks/issues';
 						return pot;
 					},
 					type: 'wp-plugin'
@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
 			options: {
 				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
 				'<%= grunt.template.today("UTC:yyyy-mm-dd h:MM:ss TT Z") %> - ' +
-				'https://github.com/imath/wordcamp-talks */\n'
+				'https://github.com/WordCampParis/wordcamp-talks */\n'
 			}
 		},
 		jsvalidate:{
@@ -97,6 +97,15 @@ module.exports = function( grunt ) {
 				cmd: 'phpunit',
 				args: ['-c', 'tests/phpunit/multisite.xml']
 			}
+		},
+		'git-archive': {
+			archive: {
+				options: {
+					'format'  : 'zip',
+					'output'  : '<%= pkg.name %>.zip',
+					'tree-ish': 'HEAD@{0}'
+				}
+			}
 		}
 	} );
 
@@ -118,6 +127,8 @@ module.exports = function( grunt ) {
 	grunt.registerTask( 'commit',  ['checktextdomain', 'jstest'] );
 
 	grunt.registerTask( 'release', ['checktextdomain', 'makepot', 'jstest', 'clean', 'uglify'] );
+
+	grunt.registerTask( 'compress', ['git-archive'] );
 
 	// Default task.
 	grunt.registerTask( 'default', ['commit'] );
