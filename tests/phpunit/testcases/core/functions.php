@@ -22,6 +22,7 @@ class WordCampTalkProposalsTest_Core_Functions extends WordCampTalkProposalsTest
 			'wct_shortlist',
 			'wct_selected',
 			'wct_rejected',
+			'wct_backup',
 		) );
 	}
 
