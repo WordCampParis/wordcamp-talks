@@ -1503,12 +1503,19 @@ function wct_talks_the_category_edit() {
 		foreach ( $terms as $term ) {
 			$output .= '<li><label for="_wct_the_category_' . esc_attr( $term->term_id ) . '">';
 			$output .= '<input type="checkbox" name="wct[_the_category][]" id="_wct_the_category_' . esc_attr( $term->term_id ) . '" value="' . esc_attr( $term->term_id ) . '" ' . checked( true, in_array( $term->term_id, $edit_categories  ), false ) . '/>';
-			$output .= ' ' . esc_html( $term->name ) . '</label></li>';
+			$output .= ' ' . esc_html( $term->name ) . '</label>';
+
+			// Output term description if set.
+			if ( ! empty( $term->description ) ) {
+				$output .= '<div class="description">' . apply_filters( 'term_description', $term->description ) . '</div>';
+			}
+
+			$output .= '</li>';
 		}
 
 		$output .= '</ul>';
 
-		array( 'output' => $output, 'selected_terms' => $edit_categories );
+		return array( 'output' => $output, 'selected_terms' => $edit_categories );
 	}
 
 /**

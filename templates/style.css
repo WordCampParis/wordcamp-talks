@@ -744,7 +744,8 @@ a.wpis-title-button {
 	line-height: normal;
 }
 
-#wordcamp-talks .standard-form p.description {
+#wordcamp-talks .standard-form p.description,
+#wordcamp-talks .standard-form .description p {
 	color: #888;
 	font-size: 80%;
 	margin: 5px 0;
