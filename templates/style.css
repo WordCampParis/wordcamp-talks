@@ -233,6 +233,10 @@ span.talk-status.wct_shortlist {
 	background-color: #3388aa;
 }
 
+span.talk-status.wct_backup {
+	background-color: #7F38EC;
+}
+
 .talk-nav-single span.talk-status {
 	display: none;
 }

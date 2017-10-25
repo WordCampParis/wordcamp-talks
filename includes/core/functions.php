@@ -367,6 +367,7 @@ function wct_get_statuses() {
 		'wct_shortlist' => __( 'Short-listed', 'wordcamp-talks' ),
 		'wct_selected'  => __( 'Selected',     'wordcamp-talks' ),
 		'wct_rejected'  => __( 'Rejected',     'wordcamp-talks' ),
+		'wct_backup'    => __( 'Backup',       'wordcamp-talks' ),
 	) );
 }
 
@@ -385,6 +386,7 @@ function wct_get_status_label_count( $status = '' ) {
 		'wct_shortlist' => _n_noop( 'Short-listed <span class="count">(%s)</span>', 'Short-listed <span class="count">(%s)</span>', 'wordcamp-talks' ),
 		'wct_selected'  => _n_noop( 'Selected <span class="count">(%s)</span>', 'Selected <span class="count">(%s)</span>', 'wordcamp-talks' ),
 		'wct_rejected'  => _n_noop( 'Rejected <span class="count">(%s)</span>', 'Rejected <span class="count">(%s)</span>', 'wordcamp-talks' ),
+		'wct_backup'    => _n_noop( 'Backup <span class="count">(%s)</span>', 'Backups <span class="count">(%s)</span>', 'wordcamp-talks' ),
 	);
 
 	if ( isset( $labels[$status] ) ) {

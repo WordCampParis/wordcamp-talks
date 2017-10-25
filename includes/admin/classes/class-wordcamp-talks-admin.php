@@ -1679,7 +1679,8 @@ class WordCamp_Talks_Admin {
 			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_pending th,
 			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_selected th,
 			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_shortlist th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th {
+			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th,
+			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
 				border-left-width: 4px;
 				border-left-style: solid;
 				border-left-color: #ffba00;
@@ -1694,6 +1695,10 @@ class WordCamp_Talks_Admin {
 
 			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th {
 				border-left-color: #dd3333;
+			}
+
+			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
+				border-left-color: #7F38EC;
 			}
 
 			body.post-type-<?php echo $post_type;?> .fixed th.column-rates {
@@ -1711,7 +1716,10 @@ class WordCamp_Talks_Admin {
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current {
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
 				border-bottom-color: #ffba00;
 				border-bottom-width: 1px;
 				border-bottom-style: solid;
@@ -1727,6 +1735,10 @@ class WordCamp_Talks_Admin {
 
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a {
 				border-bottom-color: #dd3333;
+			}
+
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a {
+				border-bottom-color: #7F38EC;
 			}
 
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover,
@@ -1756,6 +1768,13 @@ class WordCamp_Talks_Admin {
 				border-bottom-color: #dd3333;
 			}
 
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
+				background-color: #7F38EC;
+				color: #FFF;
+				border-bottom-color: #7F38EC;
+			}
+
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover .count,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current .count,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover .count,
@@ -1763,7 +1782,9 @@ class WordCamp_Talks_Admin {
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover .count,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current .count,
 			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current .count {
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current .count,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover .count,
+			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current .count {
 				color: #FFF;
 			}
 
