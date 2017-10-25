@@ -799,6 +799,7 @@ function wct_get_feedback_messages( $type = '', $id = false ) {
 			6 => __( 'Make sure to check you received the email we sent you to reset your password.',          'wordcamp-talks' ),
 			7 => __( 'Otherwise, edit your email and password from your profile before logging off the site.', 'wordcamp-talks' ),
 			8 => __( 'Profile successfully updated.',                                                          'wordcamp-talks' ),
+			9 => __( 'The Talk Proposal was successfully removed from backup plans.',                          'wordcamp-talks' ),
 		),
 		'error' => array(
 			1  => __( 'Something went wrong, please try again',                           'wordcamp-talks' ),
@@ -1617,6 +1618,9 @@ function wct_actions() {
 
 	// Updates an existing talk if requested.
 	wct_talks_update_talk();
+
+	// Removes a talk from backups plan.
+	wct_talks_remove_talk_from_backups();
 
 	// Registers a new user if needed.
 	wct_users_signup_user();

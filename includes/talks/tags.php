@@ -867,6 +867,38 @@ function wct_talks_the_rating_link( $zero = false, $more = false, $css_class = '
 	}
 
 /**
+ * Displays a link to let the speaker refuse to be one of the backup plans.
+ *
+ * @since 1.1.1
+ */
+function wct_talks_the_backup_remove_link() {
+	echo wct_talks_get_backup_remove_link();
+}
+add_action( 'wct_talk_header', 'wct_talks_the_backup_remove_link' );
+
+/**
+ * Gets a link to let the speaker refuse to be one of the backup plans.
+ *
+ * @since 1.1.1
+ *
+ * @return  string HTML output.
+ */
+function wct_talks_get_backup_remove_link() {
+	$talk = wct()->query_loop->talk;
+
+	if ( 'wct_backup' !== get_post_status( $talk ) || wct_users_current_user_id() !== (int) $talk->post_author ) {
+		return '';
+	}
+
+	$remove_backup_link = wp_nonce_url( add_query_arg( 'backup', 'no', wct_talks_get_talk_permalink( $talk ) ), 'remove-backup' );
+
+	return sprintf( '<span class="talk-remove-backup-link"><a href="%1$s">%2$s</a></span>',
+		esc_url( $remove_backup_link ),
+		esc_html__( 'Remove from backup plans', 'wordcamp-talks' )
+	);
+}
+
+/**
  * Displays the excerpt of a talk.
  *
  * @since 1.0.0

@@ -1096,6 +1096,51 @@ function wct_talks_update_talk() {
 }
 
 /**
+ * Handle Talk's removal from backup plans.
+ *
+ * @since 1.1.1
+ */
+function wct_talks_remove_talk_from_backups() {
+
+	// Bail if not a remove from backups request
+	if ( ! wct_is_single_talk() || ! isset( $_GET['backup'] ) || 'no' !== $_GET['backup'] ) {
+		return;
+	}
+
+	// Check nonce
+	check_admin_referer( 'remove-backup' );
+
+	$talk     = get_post();
+	$redirect = wct_talks_get_talk_permalink( $talk );
+
+	// Init feedbacks.
+	$feedback_message = array(
+		'error'   => array(),
+		'success' => array(),
+		'info'    => array(),
+	);
+
+	// Display an error if it's not the author
+	if ( wct_users_current_user_id() !== (int) $talk->post_author ) {
+		$feedback_message['error'][] = 2;
+
+	// Change the Talk status to rejected.
+	} else {
+		$backup_talk = new WordCamp_Talks_Talks_Proposal( (int) $talk->ID );
+		$backup_talk->status = 'wct_rejected';
+
+		if ( ! $backup_talk->save() ) {
+			$feedback_message['error'][] = 1;
+		} else {
+			$feedback_message['success'][] = 9;
+		}
+	}
+
+	wp_safe_redirect( wct_add_feedback_args( array_filter( $feedback_message ), $redirect ) );
+	exit();
+}
+
+/**
  * Apply embeds to WordCamp Talk content.
  *
  * @since  1.0.0
