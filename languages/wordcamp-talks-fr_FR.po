@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: WordCamp Talk Proposals 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/WordCampParis/wordcamp-talks/"
 "issues\n"
-"POT-Creation-Date: 2017-10-25 06:58:01+00:00\n"
-"PO-Revision-Date: 2017-10-25 09:00+0100\n"
+"POT-Creation-Date: 2017-10-26 05:08:24+00:00\n"
+"PO-Revision-Date: 2017-10-26 07:09+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: FRENCH <contact@imathi.eu>\n"
 "Language: fr\n"
@@ -506,7 +506,7 @@ msgid "Status"
 msgstr "Statut"
 
 #: includes/admin/classes/class-wordcamp-talks-admin.php:1449
-#: includes/talks/tags.php:1688
+#: includes/talks/tags.php:1695
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -1403,31 +1403,31 @@ msgstr "Catégories"
 msgid "No categories are available."
 msgstr "Aucune catégorie disponible. "
 
-#: includes/talks/tags.php:1567
+#: includes/talks/tags.php:1574
 msgid "Tags"
 msgstr "Etiquettes"
 
-#: includes/talks/tags.php:1568
+#: includes/talks/tags.php:1575
 msgid "Type your tag, then hit the return or space key to add it"
 msgstr ""
 "Taper votre étiquette, puis appuyer sur la touche entrée ou espace pour "
 "l'ajouter"
 
-#: includes/talks/tags.php:1621
+#: includes/talks/tags.php:1628
 msgid "Choose the most used tag"
 msgid_plural "Choose from the %d most used tags"
 msgstr[0] "Choisir l'étiquette la plus populaire"
 msgstr[1] "Choisir parmi les étiquettes les plus populaires"
 
-#: includes/talks/tags.php:1682 includes/users/tags.php:271
+#: includes/talks/tags.php:1689 includes/users/tags.php:271
 msgid "Reset"
 msgstr "Annuler"
 
-#: includes/talks/tags.php:1683
+#: includes/talks/tags.php:1690
 msgid "Submit"
 msgstr "Déposer"
 
-#: includes/talks/tags.php:1721
+#: includes/talks/tags.php:1728
 msgid "%1$sAverage Rating:%2$s%3$s"
 msgstr "%1$sEvaluation moyenne : %2$s%3$s"
 
