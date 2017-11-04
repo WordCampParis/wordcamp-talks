@@ -1683,13 +1683,16 @@ function wct_users_sanitize_public_profile_field( $value = '', $key = '' ) {
  *
  * @since  1.0.0
  *
- * @param  int    $approved    1 if approved, 0 or spam if not.
- * @param  array  $commentdata The list of comment's parameter.
- * @return int                 1 if approved, 0 or spam if not.
+ * @param  int|WP_Error $approved    1 if approved, 0 or spam if not, or an error object.
+ * @param  array        $commentdata The list of comment's parameter.
+ * @return int                       1 if approved, 0 or spam if not.
  */
 function wct_users_raters_approved( $approved = 0, $commentdata = array() ) {
-	// Comment is already approved, no need to carry on.
-	if ( 1 === (int) $approved ) {
+	/**
+	 * Comment is already approved or there was an error:
+	 * no need to carry on.
+	 */
+	if ( is_wp_error( $approved ) || 1 === (int) $approved ) {
 		return $approved;
 	}
 
