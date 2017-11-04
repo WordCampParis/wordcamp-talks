@@ -11,6 +11,7 @@ Author: imath
 Author URI: http://imathi.eu/
 Text Domain: wordcamp-talks
 Domain Path: /languages/
+GitHub Plugin URI: https://github.com/WordCampParis/wordcamp-talks/
 */
 
 // Exit if accessed directly
