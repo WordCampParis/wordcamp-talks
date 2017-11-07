@@ -291,10 +291,22 @@ function wct_talks_not_found() {
 	 * @return string the message to output
 	 */
 	function wct_talks_get_not_found() {
-		// general feedback
-		$output = sprintf( __( '%s to start submitting Talk Proposals.', 'wordcamp-talks' ),
-			'<a href="' . esc_url( wp_login_url( wct_get_root_url() ) ) .'">' . esc_html__( 'Sign in', 'wordcamp-talks' ) . '</a>'
+		$sign_in = sprintf( '<a href="%1$s">%2$s</a>',
+			esc_url( wp_login_url( wct_get_root_url() ) ),
+			esc_html__( 'Sign in', 'wordcamp-talks' )
 		);
+
+		// general feedback
+		$output = sprintf( __( '%s to start submitting Talk Proposals.', 'wordcamp-talks' ), $sign_in );
+
+		if ( wct_is_signup_allowed_for_current_blog() ) {
+			$sign_up = sprintf( '<a href="%1$s">%2$s</a>',
+				esc_url( wct_users_get_signup_url() ),
+				esc_html__( 'Sign up', 'wordcamp-talks' )
+			);
+
+			$output = sprintf( __( '%1$s or %2$s to start submitting Talk Proposals.', 'wordcamp-talks' ), $sign_in, $sign_up );
+		}
 
 		if ( wct_is_user_profile() ) {
 			/**
