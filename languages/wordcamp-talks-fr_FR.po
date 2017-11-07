@@ -2,11 +2,11 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talk Proposals 1.1.1\n"
+"Project-Id-Version: WordCamp Talk Proposals 1.1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/WordCampParis/wordcamp-talks/"
 "issues\n"
-"POT-Creation-Date: 2017-10-26 05:08:24+00:00\n"
-"PO-Revision-Date: 2017-10-26 07:09+0100\n"
+"POT-Creation-Date: 2017-11-07 17:35:36+00:00\n"
+"PO-Revision-Date: 2017-11-07 18:51+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: FRENCH <contact@imathi.eu>\n"
 "Language: fr\n"
@@ -131,7 +131,7 @@ msgid "Average Rating"
 msgstr "Evaluation moyenne"
 
 #: includes/admin/classes/class-wordcamp-talks-admin.php:970
-#: includes/talks/functions.php:756 includes/talks/tags.php:824
+#: includes/talks/functions.php:756 includes/talks/tags.php:836
 msgid "Not rated yet"
 msgstr "Pas encore évaluée"
 
@@ -506,7 +506,7 @@ msgid "Status"
 msgstr "Statut"
 
 #: includes/admin/classes/class-wordcamp-talks-admin.php:1449
-#: includes/talks/tags.php:1695
+#: includes/talks/tags.php:1707
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -605,27 +605,31 @@ msgstr "Champs à ajouter au formulaire d'inscription."
 msgid "Signups Autolog"
 msgstr "Auto-connexion des inscrits"
 
-#: includes/admin/settings.php:144
+#: includes/admin/settings.php:122
+msgid "WP.org User Profile syncing"
+msgstr "Synchronisation des profils WP.org"
+
+#: includes/admin/settings.php:153
 msgid "Sign-ups"
 msgstr "Inscriptions"
 
-#: includes/admin/settings.php:152
+#: includes/admin/settings.php:161
 msgid "Default role for network users"
 msgstr "Rôle par défaut pour les utilisateurs du réseau"
 
-#: includes/admin/settings.php:265
+#: includes/admin/settings.php:274
 msgid "Possible conflict with: %s"
 msgstr "Conflit possible avec : %s"
 
-#: includes/admin/settings.php:281
+#: includes/admin/settings.php:290
 msgid "Customize WordCamp Talk Proposals features."
 msgstr "Personnalisation des fonctionnalités de l'extension."
 
-#: includes/admin/settings.php:295
+#: includes/admin/settings.php:304
 msgid "Date when the call for speakers will end."
 msgstr "Date de fin de l'appel à orateurs."
 
-#: includes/admin/settings.php:309
+#: includes/admin/settings.php:318
 msgid ""
 "You can customize the hover captions used for stars by using a comma "
 "separated list of captions"
@@ -633,7 +637,7 @@ msgstr ""
 "Vous pouvez personnaliser les info-bulles utilisées pour les appréciations "
 "en séparant chacune d'entre elles d'une virgule"
 
-#: includes/admin/settings.php:338
+#: includes/admin/settings.php:347
 msgid ""
 "Adding a comma separated list of fields label will generate new %s contact "
 "informations for the user."
@@ -641,11 +645,15 @@ msgstr ""
 "En ajoutant une liste de labels de champ séparés par une virgule, cela "
 "générera autant de nouvelles informations de contact pour l'utilisateur."
 
-#: includes/admin/settings.php:377
+#: includes/admin/settings.php:386
 msgid "Automagically log in just signed up users."
 msgstr "Connecte magiquement les tous nouveaux inscrits."
 
-#: includes/admin/settings.php:409
+#: includes/admin/settings.php:400
+msgid "New users need to have an account on WordPress.org."
+msgstr "Les nouveaux utilisateurs doivent avoir un compte sur WordPress.org."
+
+#: includes/admin/settings.php:432
 msgid ""
 "Paste the URL of your webhook in this field to notify your Slack team when a "
 "new Talk Proposal is submitted."
@@ -653,15 +661,15 @@ msgstr ""
 "Coller l'URL de votre webhook dans ce champ afin de notifier votre équipe "
 "sur Slack lorsqu'une nouvelle intervention est proposée."
 
-#: includes/admin/settings.php:423
+#: includes/admin/settings.php:446
 msgid "Define your preferences about network users"
 msgstr "Définissez vos préférences pour les utilisateurs du réseau"
 
-#: includes/admin/settings.php:437
+#: includes/admin/settings.php:460
 msgid "Allow WordCamp Talks to manage signups for your site"
 msgstr "Autoriser l'extension à gérer les inscriptions de votre site"
 
-#: includes/admin/settings.php:451
+#: includes/admin/settings.php:474
 msgid ""
 "Automatically set this site&#39;s default role for users submitting a new "
 "Talk Proposal and having no role on this site."
@@ -669,11 +677,11 @@ msgstr ""
 "Utiliser le rôle par défaut de ce site comme rôle par défaut des "
 "utilisateurs déposant leur première proposition sur ce site."
 
-#: includes/admin/settings.php:560
+#: includes/admin/settings.php:583
 msgid "WordCamp Talk Proposals Settings"
 msgstr "Réglages pour les propositions des orateurs du WordCamp"
 
-#: includes/admin/settings.php:569
+#: includes/admin/settings.php:592
 msgid "Save Changes"
 msgstr "Enregistrer les modifications"
 
@@ -705,7 +713,7 @@ msgid_plural "Viewing %1$s to %2$s (of %3$s comments)"
 msgstr[0] "Affichage de %1$s à %2$s (sur %3$s commentaire)"
 msgstr[1] "Affichage de %1$s à %2$s (sur %3$s commentaires)"
 
-#: includes/comments/tags.php:179 includes/talks/tags.php:486
+#: includes/comments/tags.php:179 includes/talks/tags.php:498
 msgid "View user's profile"
 msgstr "Afficher le profil"
 
@@ -1112,7 +1120,7 @@ msgstr "Profil utilisateur"
 msgid "New Talk"
 msgstr "Nouvelle proposition"
 
-#: includes/core/template-functions.php:702 includes/talks/tags.php:1183
+#: includes/core/template-functions.php:702 includes/talks/tags.php:1195
 msgid "Edit Talk"
 msgstr "Modifier la proposition"
 
@@ -1145,9 +1153,9 @@ msgstr "Profil"
 msgid "My profile"
 msgstr "Mon profil"
 
-#: includes/core/template-functions.php:997
+#: includes/core/template-functions.php:997 includes/talks/tags.php:305
 msgid "Sign up"
-msgstr "Rejoindre"
+msgstr "Inscrivez-vous"
 
 #: includes/talks/classes/class-wordcamp-talks-talks-meta.php:92
 msgid "Custom fields"
@@ -1249,104 +1257,108 @@ msgstr "Trier par:"
 msgid "Sort"
 msgstr "Trier"
 
-#: includes/talks/tags.php:295
+#: includes/talks/tags.php:296
+msgid "Sign in"
+msgstr "Connectez-vous"
+
+#: includes/talks/tags.php:300
 msgid "%s to start submitting Talk Proposals."
 msgstr "%s pour commencer à déposer des propositions"
 
-#: includes/talks/tags.php:296
-msgid "Sign in"
-msgstr "S'inscrire"
+#: includes/talks/tags.php:308
+msgid "%1$s or %2$s to start submitting Talk Proposals."
+msgstr "%1$s ou %2$s pour commencer à déposer des propositions"
 
-#: includes/talks/tags.php:305
+#: includes/talks/tags.php:317
 msgid "It looks like you have not submitted any Talk Proposals yet."
 msgstr "Il semble que vous n'ayez pas déposé de proposition jusqu'à présent."
 
-#: includes/talks/tags.php:308
+#: includes/talks/tags.php:320
 msgid "It looks like %s has not submitted any Talk Proposals yet"
 msgstr ""
 "On dirait que %s n'a toujours pas déposé de proposition pour le moment."
 
-#: includes/talks/tags.php:316
+#: includes/talks/tags.php:328
 msgid "It looks like %s has not rated any Talk Proposals yet"
 msgstr "On dirait que %s n'a toujours pas évalué de proposition pour le moment"
 
-#: includes/talks/tags.php:323
+#: includes/talks/tags.php:335
 msgid "Alright sparky, no more Talk Proposals to rate.. Good job!"
 msgstr ""
 "Très bien jeune padawan, tu as évalué toutes les propositions. Beau boulot!"
 
-#: includes/talks/tags.php:329
+#: includes/talks/tags.php:341
 msgid ""
 "It looks like no Talk Proposals have been published in this category yet"
 msgstr ""
 "Il semble qu'aucune proposition n'ait été publiée dans cette catégorie "
 "jusqu'à présent."
 
-#: includes/talks/tags.php:332
+#: includes/talks/tags.php:344
 msgid "It looks like no Talk Proposals have been marked with this tag yet"
 msgstr ""
 "Il semble qu'aucune proposition n'ait été marquée avec cette étiquette "
 "jusqu'à présent."
 
-#: includes/talks/tags.php:335 includes/talks/tags.php:338
+#: includes/talks/tags.php:347 includes/talks/tags.php:350
 msgid "It looks like no Talk Proposals match your search terms."
 msgstr "On dirait qu'aucune proposition ne satisfasse votre recherche."
 
-#: includes/talks/tags.php:341
+#: includes/talks/tags.php:353
 msgid "It looks like no Talk Proposals have been rated yet."
 msgstr "On dirait qu'aucune proposition n'ait été évaluée pour le moment."
 
-#: includes/talks/tags.php:345
+#: includes/talks/tags.php:357
 msgid "Your Talk Proposals will be listed here, %s"
 msgstr "Vos propositions seront listées ici, %s"
 
-#: includes/talks/tags.php:348
+#: includes/talks/tags.php:360
 msgid "add your first one!"
 msgstr "ajoutez en une !"
 
-#: includes/talks/tags.php:385
+#: includes/talks/tags.php:397
 msgid "Viewing %1$s to %2$s (of %3$s Talk Proposals)"
 msgid_plural "Viewing %1$s to %2$s (of %3$s Talk Proposals)"
 msgstr[0] "Affichage de %1$s à %2$s (sur %3$s proposition)"
 msgstr[1] "Affichage de %1$s à %2$s (sur %3$s propositions)"
 
-#: includes/talks/tags.php:679
+#: includes/talks/tags.php:691
 msgid "No Comments"
 msgstr "Aucun Commentaire"
 
-#: includes/talks/tags.php:682
+#: includes/talks/tags.php:694
 msgid "1 Comment"
 msgstr "1 Commentaire"
 
-#: includes/talks/tags.php:685
+#: includes/talks/tags.php:697
 msgid "% Comments"
 msgstr "% Commentaires"
 
-#: includes/talks/tags.php:688
+#: includes/talks/tags.php:700
 msgid "Comments Off"
 msgstr "Commentaires fermés"
 
-#: includes/talks/tags.php:716
+#: includes/talks/tags.php:728
 msgid "Comment on %s"
 msgstr "Commenter %s"
 
-#: includes/talks/tags.php:827 templates/talk-header.php:13
+#: includes/talks/tags.php:839 templates/talk-header.php:13
 msgid "Average rating: %"
 msgstr "Evaluation moyenne: %"
 
-#: includes/talks/tags.php:832
+#: includes/talks/tags.php:844
 msgid "You rated: %"
 msgstr "Votre évaluation : %s"
 
-#: includes/talks/tags.php:840
+#: includes/talks/tags.php:852
 msgid "Rate %s"
 msgstr "Evaluer %s"
 
-#: includes/talks/tags.php:897
+#: includes/talks/tags.php:909
 msgid "Remove from backup plans"
 msgstr "Retirer de la liste complémentaire"
 
-#: includes/talks/tags.php:925 includes/talks/tags.php:985
+#: includes/talks/tags.php:937 includes/talks/tags.php:997
 msgid ""
 "This Talk Proposal is password protected, you will need it to view its "
 "content."
@@ -1354,23 +1366,23 @@ msgstr ""
 "Cette proposition est protégée par un mot de passe, vous en avez besoin pour "
 "voir son contenu."
 
-#: includes/talks/tags.php:929 includes/talks/tags.php:989
+#: includes/talks/tags.php:941 includes/talks/tags.php:1001
 msgid "This Talk Proposal is private, you cannot view its content."
 msgstr "Cette proposition est privée, vous ne pouvez pas voir son contenu."
 
-#: includes/talks/tags.php:1124
+#: includes/talks/tags.php:1136
 msgid "hidden name"
 msgstr "nom masqué"
 
-#: includes/talks/tags.php:1220
+#: includes/talks/tags.php:1232
 msgid "All Talks"
 msgstr "Toutes les propositions"
 
-#: includes/talks/tags.php:1236
+#: includes/talks/tags.php:1248
 msgid "You are not allowed to submit Talk Proposals"
 msgstr "Vous n'avez pas les droits suffisants pour publier des propositions."
 
-#: includes/talks/tags.php:1242
+#: includes/talks/tags.php:1254
 msgid ""
 "Please <a href=\"%s\" title=\"Log in\">log in</a> or <a href=\"%s\" title="
 "\"Sign up\">register</a> to this site to submit a Talk Proposal."
@@ -1379,7 +1391,7 @@ msgstr ""
 "href=\"%s\" title=\"Inscription\">inscrire</a> avant de partager votre "
 "proposition."
 
-#: includes/talks/tags.php:1248
+#: includes/talks/tags.php:1260
 msgid ""
 "Please <a href=\"%s\" title=\"Log in\">log in</a> to this site to submit a "
 "Talk Proposal."
@@ -1387,47 +1399,47 @@ msgstr ""
 "Merci de vous <a href=\"%s\" title=\"connectez-vous\">connecter</a> avant de "
 "déposer votre proposition."
 
-#: includes/talks/tags.php:1266
+#: includes/talks/tags.php:1278
 msgid "Title"
 msgstr "Titre"
 
-#: includes/talks/tags.php:1328
+#: includes/talks/tags.php:1340
 msgid "Description"
 msgstr "Description"
 
-#: includes/talks/tags.php:1447
+#: includes/talks/tags.php:1459
 msgid "Categories"
 msgstr "Catégories"
 
-#: includes/talks/tags.php:1495
+#: includes/talks/tags.php:1507
 msgid "No categories are available."
 msgstr "Aucune catégorie disponible. "
 
-#: includes/talks/tags.php:1574
+#: includes/talks/tags.php:1586
 msgid "Tags"
 msgstr "Etiquettes"
 
-#: includes/talks/tags.php:1575
+#: includes/talks/tags.php:1587
 msgid "Type your tag, then hit the return or space key to add it"
 msgstr ""
 "Taper votre étiquette, puis appuyer sur la touche entrée ou espace pour "
 "l'ajouter"
 
-#: includes/talks/tags.php:1628
+#: includes/talks/tags.php:1640
 msgid "Choose the most used tag"
 msgid_plural "Choose from the %d most used tags"
 msgstr[0] "Choisir l'étiquette la plus populaire"
 msgstr[1] "Choisir parmi les étiquettes les plus populaires"
 
-#: includes/talks/tags.php:1689 includes/users/tags.php:271
+#: includes/talks/tags.php:1701 includes/users/tags.php:275
 msgid "Reset"
 msgstr "Annuler"
 
-#: includes/talks/tags.php:1690
+#: includes/talks/tags.php:1702
 msgid "Submit"
 msgstr "Déposer"
 
-#: includes/talks/tags.php:1728
+#: includes/talks/tags.php:1740
 msgid "%1$sAverage Rating:%2$s%3$s"
 msgstr "%1$sEvaluation moyenne : %2$s%3$s"
 
@@ -1507,11 +1519,11 @@ msgstr "Evaluée(s)"
 msgid "To rate"
 msgstr "A évaluer"
 
-#: includes/users/functions.php:1412
+#: includes/users/functions.php:1406
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
-#: includes/users/functions.php:1413
+#: includes/users/functions.php:1407
 msgid "E-mail"
 msgstr "Email"
 
@@ -1546,11 +1558,16 @@ msgstr ""
 msgid "https://en.gravatar.com/"
 msgstr "https://fr.gravatar.com/"
 
-#: includes/users/tags.php:272
+#: includes/users/tags.php:207
+msgid "Make sure your username is at least 4 characters long."
+msgstr ""
+"Merci de choisir un nom d'utilisateur contenant au moins quatre caractères."
+
+#: includes/users/tags.php:276
 msgid "Sign-up"
 msgstr "Rejoindre"
 
-#: includes/users/tags.php:397
+#: includes/users/tags.php:401
 msgid ""
 "Your bio will be used to introduce yourself in case one of your Talk "
 "Proposals is selected (Required)."
@@ -1558,7 +1575,7 @@ msgstr ""
 "Votre bio sera utilisée pour vous présenter dans le cas où votre proposition "
 "serait retenue (Obligatoire)"
 
-#: includes/users/tags.php:421
+#: includes/users/tags.php:425
 msgid "Edit profile"
 msgstr "Modifier le profil"
 
@@ -1734,27 +1751,27 @@ msgctxt "Export Tool button"
 msgid "Export"
 msgstr "Exporter"
 
-#: includes/admin/settings.php:218
+#: includes/admin/settings.php:227
 msgctxt "wc_talks settings root slug conflict"
 msgid "this %s"
 msgstr "ce %s"
 
-#: includes/admin/settings.php:228
+#: includes/admin/settings.php:237
 msgctxt "bbPress possible conflict"
 msgid "bbPress forum root slug"
 msgstr "slug racine du forum bbPress"
 
-#: includes/admin/settings.php:242
+#: includes/admin/settings.php:251
 msgctxt "Child blog possible conflict"
 msgid "child blog slug"
 msgstr "slug de site enfant"
 
-#: includes/comments/tags.php:263 includes/talks/tags.php:603
+#: includes/comments/tags.php:263 includes/talks/tags.php:615
 msgctxt "talk permalink title protected attribute"
 msgid "Protected:"
 msgstr "Protégée :"
 
-#: includes/comments/tags.php:265 includes/talks/tags.php:605
+#: includes/comments/tags.php:265 includes/talks/tags.php:617
 msgctxt "talk permalink title private attribute"
 msgid "Private:"
 msgstr "Privée :"
@@ -1887,78 +1904,78 @@ msgctxt "customizer menu section title"
 msgid "Talk Proposals"
 msgstr "Propositions"
 
-#: includes/talks/tags.php:699
+#: includes/talks/tags.php:711
 msgctxt "talk protected comments message"
 msgid "Comments are protected."
 msgstr "Commentaires protégés."
 
-#: includes/talks/tags.php:702
+#: includes/talks/tags.php:714
 msgctxt "talk private comments message"
 msgid "Comments are private."
 msgstr "Commentaires privés"
 
-#: includes/talks/tags.php:844
+#: includes/talks/tags.php:856
 msgctxt "talk rating not logged in message"
 msgid "Please, log in to rate."
 msgstr "Merci de vous connecter pour évaluer la proposition"
 
 #. Translators: 1 is category, 2 is tag and 3 is the date.
-#: includes/talks/tags.php:1102
+#: includes/talks/tags.php:1114
 msgctxt "default talk footer utility text"
 msgid "This Talk Proposal was posted on %3$s."
 msgstr "Cette proposition a été déposée le %3$s."
 
 #. Translators: 1 is category, 2 is tag and 3 is the date.
-#: includes/talks/tags.php:1107
+#: includes/talks/tags.php:1119
 msgctxt "talk attached to at least one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s on %3$s."
 msgstr "Cette proposition a été déposée dans %1$s le %3$s."
 
 #. Translators: 1 is category, 2 is tag and 3 is the date.
-#: includes/talks/tags.php:1113
+#: includes/talks/tags.php:1125
 msgctxt "talk attached to at least one tag footer utility text"
 msgid "This Talk Proposal was tagged %2$s on %3$s."
 msgstr "Cette proposition a été étiquetée %2$s le %3$s."
 
 #. Translators: 1 is category, 2 is tag and 3 is the date.
-#: includes/talks/tags.php:1118
+#: includes/talks/tags.php:1130
 msgctxt ""
 "talk attached to at least one tag and one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s and tagged %2$s on %3$s."
 msgstr "Cette proposition a été déposée dans %1$s et étiquetée %2$s le %3$s."
 
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
-#: includes/talks/tags.php:1132
+#: includes/talks/tags.php:1144
 msgctxt "default single talk footer utility text"
 msgid "This Talk Proposal was posted on %3$s by %4$s."
 msgstr "Cette proposition a été déposée le %3$s par %4$s."
 
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
-#: includes/talks/tags.php:1137
+#: includes/talks/tags.php:1149
 msgctxt "single talk attached to at least one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s on %3$s by %4$s."
 msgstr "Cette proposition a été dépoqée dans %1$s le %3$s par %4$s."
 
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
-#: includes/talks/tags.php:1142
+#: includes/talks/tags.php:1154
 msgctxt "single talk attached to at least one tag footer utility text"
 msgid "This Talk Proposal was tagged %2$s on %3$s by %4$s."
 msgstr "Cette proposition a été étiquetée %2$s le %3$s par %4$s."
 
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
-#: includes/talks/tags.php:1146
+#: includes/talks/tags.php:1158
 msgctxt ""
 "single talk attached to at least one tag and one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s and tagged %2$s on %3$s by %4$s."
 msgstr ""
 "Cette proposition a été déposée dans %1$s et étiquetée %2$s le %3$s par %4$s."
 
-#: includes/talks/tags.php:1219
+#: includes/talks/tags.php:1231
 msgctxt "Previous post link"
 msgid "&larr;"
 msgstr "&larr;"
 
-#: includes/talks/tags.php:1221
+#: includes/talks/tags.php:1233
 msgctxt "Next post link"
 msgid "&rarr;"
 msgstr "&rarr;"
@@ -1973,7 +1990,7 @@ msgctxt "user talks profile slug"
 msgid "talks"
 msgstr "propositions"
 
-#: includes/users/functions.php:1467
+#: includes/users/functions.php:1461
 msgctxt "Use the same translation as WP Core"
 msgid "[%s] Your username and password info"
 msgstr "[%s] Votre identifiant et votre mot de passe"
