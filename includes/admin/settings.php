@@ -391,7 +391,7 @@ function wct_autolog_signups_fields_setting_callback() {
 /**
  * Profiles WP.org syncing callback.
  *
- * @since 1.1.3
+ * @since 1.1.2
  */
 function wct_wp_org_syncing_setting_callback() {
 	?>

@@ -184,19 +184,19 @@ function wct_talk_slack_webhook_url( $default = '' ) {
 /**
  * WordPress.org profile check/syncing
  *
- * @since  1.1.3
+ * @since  1.1.2
  *
  * @param  integer $default Defaults to 1 to check the username against profiles.wordpress.org.
  * @return boolean          True.to check the username against profiles.wordpress.org.
  *                          False otherwise.
  */
 function wct_talk_sync_wp_org_profile( $default = 1 ) {
-	apply_filters_deprecated( 'wct_users_has_wp_org_profile', array( true ), '1.1.3', 'wct_talk_sync_wp_org_profile' );
+	apply_filters_deprecated( 'wct_users_has_wp_org_profile', array( true ), '1.1.2', 'wct_talk_sync_wp_org_profile' );
 
 	/**
 	 * FIlter here by returning false to bypass the profiles.wordpress.org check.
 	 *
-	 * @since  1.1.3
+	 * @since  1.1.2
 	 *
 	 * @param  boolean $value True to check the profile exists. False otherwise.
 	 */
