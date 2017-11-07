@@ -1242,14 +1242,8 @@ function wct_users_signup_user( $exit = true ) {
 	 */
 	do_action( 'wct_users_before_signup_user', $user_login, $user_email, $edit_user );
 
-	/**
-	 * FIlter here by returning false to bypass the profiles.wordpress.org check.
-	 *
-	 * @since  1.1.0
-	 *
-	 * @param  boolean $value True to check the profile exists. False otherwise.
-	 */
-	if ( true === apply_filters( 'wct_users_has_wp_org_profile', true ) ) {
+	// Do the profiles.wordpress.org check/syncing.
+	if ( wct_talk_sync_wp_org_profile() ) {
 		$wporg_profile = new WordCamp_Talks_Users_Profile_Parser;
 		$profile_data  = $wporg_profile->parse( $user_login );
 

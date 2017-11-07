@@ -38,6 +38,7 @@ function wct_get_default_options() {
 		'_wc_talks_autolog_enabled'     => 0,
 		'_wc_talks_editing_timeout'     => '+1 hour',
 		'_wc_talks_slack_webhook_url'   => '',
+		'_wc_talks_wp_org_syncing'      => 1,
 	);
 
 	// Multisite options
@@ -178,6 +179,28 @@ function wct_talk_editing_timeout( $default = '+1 hour' ) {
  */
 function wct_talk_slack_webhook_url( $default = '' ) {
 	return get_option( '_wc_talks_slack_webhook_url', $default );
+}
+
+/**
+ * WordPress.org profile check/syncing
+ *
+ * @since  1.1.3
+ *
+ * @param  integer $default Defaults to 1 to check the username against profiles.wordpress.org.
+ * @return boolean          True.to check the username against profiles.wordpress.org.
+ *                          False otherwise.
+ */
+function wct_talk_sync_wp_org_profile( $default = 1 ) {
+	apply_filters_deprecated( 'wct_users_has_wp_org_profile', array( true ), '1.1.3', 'wct_talk_sync_wp_org_profile' );
+
+	/**
+	 * FIlter here by returning false to bypass the profiles.wordpress.org check.
+	 *
+	 * @since  1.1.3
+	 *
+	 * @param  boolean $value True to check the profile exists. False otherwise.
+	 */
+	return (bool) apply_filters( 'wct_talk_sync_wp_org_profile', get_option( '_wc_talks_wp_org_syncing', $default ) );
 }
 
 /**

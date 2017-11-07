@@ -203,6 +203,10 @@ function wct_users_the_signup_fields() {
 			),
 		) );
 
+		if ( ! wct_talk_sync_wp_org_profile() ) {
+			$fields_description['user_login'] = __( 'Make sure your username is at least 4 characters long.', 'wordcamp-talks' );
+		}
+
 		foreach ( (array) wct_user_get_fields() as $key => $label ) {
 			// reset
 			$sanitized = array(
