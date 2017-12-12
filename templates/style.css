@@ -414,6 +414,9 @@ body.single-talks #wordcamp-talks div.talk-header {
 	text-decoration: none;
 }
 
+#wordcamp-talks .talk-author a {
+	margin-left: 5px;
+}
 #wordcamp-talks .talk-author a,
 #wordcamp-talks .talk-author a:hover {
 	text-decoration: none;
