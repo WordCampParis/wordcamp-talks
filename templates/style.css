@@ -414,6 +414,9 @@ body.single-talks #wordcamp-talks div.talk-header {
 	text-decoration: none;
 }
 
+#wordcamp-talks .talk-author a {
+	margin-left: 5px;
+}
 #wordcamp-talks .talk-author a,
 #wordcamp-talks .talk-author a:hover {
 	text-decoration: none;
@@ -489,10 +492,6 @@ body.single-talks #comments .commentlist .reply,
 
 a.wpis-title-button {
 	vertical-align: middle;
-}
-
-#wordcamp-talks .talk-footer a {
-	box-shadow: none;
 }
 
 /*--------------------------------------------------------------
