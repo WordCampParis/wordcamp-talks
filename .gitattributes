@@ -5,6 +5,7 @@
 /.jshintrc export-ignore
 /Gruntfile.js export-ignore
 /package.json export-ignore
+/package-lock.json export-ignore
 /tests export-ignore
 /phpunit.xml.dist export-ignore
 /LICENSE export-ignore

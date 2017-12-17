@@ -273,7 +273,7 @@ class WordCamp_Talks_Talks_Proposal {
 
 		$query_args = array(
 			'post_status'    => $talks_status,
-			'post_type'      => 'talks',
+			'post_type'      => wct_get_post_type(),
 			'posts_per_page' => $r['per_page'],
 			'paged'          => $r['page'],
 			'orderby'        => $r['orderby'],

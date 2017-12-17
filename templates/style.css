@@ -414,11 +414,12 @@ body.single-talks #wordcamp-talks div.talk-header {
 	text-decoration: none;
 }
 
-#wordcamp-talks .talk-author a {
+#wordcamp-talks .talk-author {
 	margin-left: 5px;
 }
-#wordcamp-talks .talk-author a,
-#wordcamp-talks .talk-author a:hover {
+
+#wordcamp-talks .talk-author,
+#wordcamp-talks .talk-author:hover {
 	text-decoration: none;
 	border: none;
 }
@@ -436,6 +437,12 @@ body.single-talks #wordcamp-talks div.talk-header {
 	padding:10px 0;
 	clear:both;
 	overflow: hidden;
+}
+
+#wordcamp-talks ul.talk-nav-single a {
+	box-shadow: none;
+	text-decoration: none;
+	border: none;
 }
 
 #wordcamp-talks ul.talk-nav-single li {
