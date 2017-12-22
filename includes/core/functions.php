@@ -1601,6 +1601,29 @@ function wct_is_signup_allowed_for_current_blog() {
 	return apply_filters( 'wct_is_signup_allowed_for_current_blog', wct_allow_signups() );
 }
 
+/**
+ * Checks whether the talks submission ended or not.
+ *
+ * @since  1.1.4
+ *
+ * @return boolean True if it ended. False otherwise.
+ */
+function wct_has_talks_submission_ended() {
+	$closing   = (int) wct_get_closing_date( true );
+	$is_closed = false;
+
+	// No closing date defined, free to post if you can!
+	if ( ! empty( $closing ) ) {
+		$now = strtotime( date_i18n( 'Y-m-d H:i' ) );
+
+		if ( $closing < $now ) {
+			$is_closed = true;
+		}
+	}
+
+	return $is_closed;
+}
+
 /** Actions handler **********************************************************/
 
 /**

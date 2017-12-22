@@ -360,6 +360,9 @@ function wct_talks_not_found() {
 					esc_html__( 'add your first one!', 'wordcamp-talks' )
 				)
 			);
+
+		} elseif ( wct_has_talks_submission_ended() ) {
+			$output = __( 'Oh no it is too late! Talk submissions are closed.', 'wordcamp-talks' );
 		}
 
 		/**

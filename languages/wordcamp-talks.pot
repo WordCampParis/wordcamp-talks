@@ -2,10 +2,10 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talk Proposals 1.1.3\n"
+"Project-Id-Version: WordCamp Talk Proposals 1.1.4\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/WordCampParis/wordcamp-talks/issues\n"
-"POT-Creation-Date: 2017-12-17 17:10:17+00:00\n"
+"POT-Creation-Date: 2017-12-22 04:12:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -120,7 +120,7 @@ msgid "Average Rating"
 msgstr ""
 
 #: includes/admin/classes/class-wordcamp-talks-admin.php:970
-#: includes/talks/functions.php:756 includes/talks/tags.php:836
+#: includes/talks/functions.php:756 includes/talks/tags.php:839
 msgid "Not rated yet"
 msgstr ""
 
@@ -400,7 +400,7 @@ msgid "Status"
 msgstr ""
 
 #: includes/admin/classes/class-wordcamp-talks-admin.php:1449
-#: includes/talks/tags.php:1707
+#: includes/talks/tags.php:1710
 msgid "Update"
 msgstr ""
 
@@ -585,7 +585,7 @@ msgid_plural "Viewing %1$s to %2$s (of %3$s comments)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/comments/tags.php:179 includes/talks/tags.php:498
+#: includes/comments/tags.php:179 includes/talks/tags.php:501
 msgid "View user's profile"
 msgstr ""
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "New Talk"
 msgstr ""
 
-#: includes/core/template-functions.php:702 includes/talks/tags.php:1195
+#: includes/core/template-functions.php:702 includes/talks/tags.php:1198
 msgid "Edit Talk"
 msgstr ""
 
@@ -1165,121 +1165,125 @@ msgstr ""
 msgid "add your first one!"
 msgstr ""
 
-#: includes/talks/tags.php:397
+#: includes/talks/tags.php:365
+msgid "Oh no it is too late! Talk submissions are closed."
+msgstr ""
+
+#: includes/talks/tags.php:400
 msgid "Viewing %1$s to %2$s (of %3$s Talk Proposals)"
 msgid_plural "Viewing %1$s to %2$s (of %3$s Talk Proposals)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/talks/tags.php:691
+#: includes/talks/tags.php:694
 msgid "No Comments"
 msgstr ""
 
-#: includes/talks/tags.php:694
+#: includes/talks/tags.php:697
 msgid "1 Comment"
 msgstr ""
 
-#: includes/talks/tags.php:697
+#: includes/talks/tags.php:700
 msgid "% Comments"
 msgstr ""
 
-#: includes/talks/tags.php:700
+#: includes/talks/tags.php:703
 msgid "Comments Off"
 msgstr ""
 
-#: includes/talks/tags.php:728
+#: includes/talks/tags.php:731
 msgid "Comment on %s"
 msgstr ""
 
-#: includes/talks/tags.php:839 templates/talk-header.php:13
+#: includes/talks/tags.php:842 templates/talk-header.php:13
 msgid "Average rating: %"
 msgstr ""
 
-#: includes/talks/tags.php:844
+#: includes/talks/tags.php:847
 msgid "You rated: %"
 msgstr ""
 
-#: includes/talks/tags.php:852
+#: includes/talks/tags.php:855
 msgid "Rate %s"
 msgstr ""
 
-#: includes/talks/tags.php:909
+#: includes/talks/tags.php:912
 msgid "Remove from backup plans"
 msgstr ""
 
-#: includes/talks/tags.php:937 includes/talks/tags.php:997
+#: includes/talks/tags.php:940 includes/talks/tags.php:1000
 msgid ""
 "This Talk Proposal is password protected, you will need it to view its "
 "content."
 msgstr ""
 
-#: includes/talks/tags.php:941 includes/talks/tags.php:1001
+#: includes/talks/tags.php:944 includes/talks/tags.php:1004
 msgid "This Talk Proposal is private, you cannot view its content."
 msgstr ""
 
-#: includes/talks/tags.php:1136
+#: includes/talks/tags.php:1139
 msgid "hidden name"
 msgstr ""
 
-#: includes/talks/tags.php:1232
+#: includes/talks/tags.php:1235
 msgid "All Talks"
 msgstr ""
 
-#: includes/talks/tags.php:1248
+#: includes/talks/tags.php:1251
 msgid "You are not allowed to submit Talk Proposals"
 msgstr ""
 
-#: includes/talks/tags.php:1254
+#: includes/talks/tags.php:1257
 msgid ""
 "Please <a href=\"%s\" title=\"Log in\">log in</a> or <a href=\"%s\" "
 "title=\"Sign up\">register</a> to this site to submit a Talk Proposal."
 msgstr ""
 
-#: includes/talks/tags.php:1260
+#: includes/talks/tags.php:1263
 msgid ""
 "Please <a href=\"%s\" title=\"Log in\">log in</a> to this site to submit a "
 "Talk Proposal."
 msgstr ""
 
-#: includes/talks/tags.php:1278
+#: includes/talks/tags.php:1281
 msgid "Title"
 msgstr ""
 
-#: includes/talks/tags.php:1340
+#: includes/talks/tags.php:1343
 msgid "Description"
 msgstr ""
 
-#: includes/talks/tags.php:1459
+#: includes/talks/tags.php:1462
 msgid "Categories"
 msgstr ""
 
-#: includes/talks/tags.php:1507
+#: includes/talks/tags.php:1510
 msgid "No categories are available."
 msgstr ""
 
-#: includes/talks/tags.php:1586
+#: includes/talks/tags.php:1589
 msgid "Tags"
 msgstr ""
 
-#: includes/talks/tags.php:1587
+#: includes/talks/tags.php:1590
 msgid "Type your tag, then hit the return or space key to add it"
 msgstr ""
 
-#: includes/talks/tags.php:1640
+#: includes/talks/tags.php:1643
 msgid "Choose the most used tag"
 msgid_plural "Choose from the %d most used tags"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/talks/tags.php:1701 includes/users/tags.php:275
+#: includes/talks/tags.php:1704 includes/users/tags.php:275
 msgid "Reset"
 msgstr ""
 
-#: includes/talks/tags.php:1702
+#: includes/talks/tags.php:1705
 msgid "Submit"
 msgstr ""
 
-#: includes/talks/tags.php:1740
+#: includes/talks/tags.php:1743
 msgid "%1$sAverage Rating:%2$s%3$s"
 msgstr ""
 
@@ -1596,12 +1600,12 @@ msgctxt "Child blog possible conflict"
 msgid "child blog slug"
 msgstr ""
 
-#: includes/comments/tags.php:263 includes/talks/tags.php:615
+#: includes/comments/tags.php:263 includes/talks/tags.php:618
 msgctxt "talk permalink title protected attribute"
 msgid "Protected:"
 msgstr ""
 
-#: includes/comments/tags.php:265 includes/talks/tags.php:617
+#: includes/comments/tags.php:265 includes/talks/tags.php:620
 msgctxt "talk permalink title private attribute"
 msgid "Private:"
 msgstr ""
@@ -1734,64 +1738,64 @@ msgctxt "customizer menu section title"
 msgid "Talk Proposals"
 msgstr ""
 
-#: includes/talks/tags.php:711
+#: includes/talks/tags.php:714
 msgctxt "talk protected comments message"
 msgid "Comments are protected."
 msgstr ""
 
-#: includes/talks/tags.php:714
+#: includes/talks/tags.php:717
 msgctxt "talk private comments message"
 msgid "Comments are private."
 msgstr ""
 
-#: includes/talks/tags.php:856
+#: includes/talks/tags.php:859
 msgctxt "talk rating not logged in message"
 msgid "Please, log in to rate."
 msgstr ""
 
-#: includes/talks/tags.php:1114
+#: includes/talks/tags.php:1117
 #. Translators: 1 is category, 2 is tag and 3 is the date.
 msgctxt "default talk footer utility text"
 msgid "This Talk Proposal was posted on %3$s."
 msgstr ""
 
-#: includes/talks/tags.php:1119
+#: includes/talks/tags.php:1122
 #. Translators: 1 is category, 2 is tag and 3 is the date.
 msgctxt "talk attached to at least one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s on %3$s."
 msgstr ""
 
-#: includes/talks/tags.php:1125
+#: includes/talks/tags.php:1128
 #. Translators: 1 is category, 2 is tag and 3 is the date.
 msgctxt "talk attached to at least one tag footer utility text"
 msgid "This Talk Proposal was tagged %2$s on %3$s."
 msgstr ""
 
-#: includes/talks/tags.php:1130
+#: includes/talks/tags.php:1133
 #. Translators: 1 is category, 2 is tag and 3 is the date.
 msgctxt "talk attached to at least one tag and one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s and tagged %2$s on %3$s."
 msgstr ""
 
-#: includes/talks/tags.php:1144
+#: includes/talks/tags.php:1147
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
 msgctxt "default single talk footer utility text"
 msgid "This Talk Proposal was posted on %3$s by %4$s."
 msgstr ""
 
-#: includes/talks/tags.php:1149
+#: includes/talks/tags.php:1152
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
 msgctxt "single talk attached to at least one category footer utility text"
 msgid "This Talk Proposal was posted in %1$s on %3$s by %4$s."
 msgstr ""
 
-#: includes/talks/tags.php:1154
+#: includes/talks/tags.php:1157
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
 msgctxt "single talk attached to at least one tag footer utility text"
 msgid "This Talk Proposal was tagged %2$s on %3$s by %4$s."
 msgstr ""
 
-#: includes/talks/tags.php:1158
+#: includes/talks/tags.php:1161
 #. Translators: 1 is category, 2 is tag, 3 is the date and 4 is author.
 msgctxt ""
 "single talk attached to at least one tag and one category footer utility "
@@ -1799,12 +1803,12 @@ msgctxt ""
 msgid "This Talk Proposal was posted in %1$s and tagged %2$s on %3$s by %4$s."
 msgstr ""
 
-#: includes/talks/tags.php:1231
+#: includes/talks/tags.php:1234
 msgctxt "Previous post link"
 msgid "&larr;"
 msgstr ""
 
-#: includes/talks/tags.php:1233
+#: includes/talks/tags.php:1236
 msgctxt "Next post link"
 msgid "&rarr;"
 msgstr ""
