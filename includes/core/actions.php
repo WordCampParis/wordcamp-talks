@@ -74,3 +74,9 @@ add_action( 'admin_bar_menu', 'wct_adminbar_menu', 999 );
 
 // Talk Embeds Meta
 add_action( 'embed_content_meta', 'wct_talks_embed_meta', 9 );
+
+// Run wp cron scheduled task for talks status email notifications
+if ( ! wp_next_scheduled( 'wct_talks_updated_talks_cron' ) ) {
+	wp_schedule_event( time(), 'daily', 'wct_talks_updated_talks_cron' );
+}
+add_action( 'wct_talks_updated_talks_cron', 'wct_talks_updated_talks_send_emails' );

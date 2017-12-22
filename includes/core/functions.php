@@ -1601,6 +1601,64 @@ function wct_is_signup_allowed_for_current_blog() {
 	return apply_filters( 'wct_is_signup_allowed_for_current_blog', wct_allow_signups() );
 }
 
+/**
+ * Updates last_status post meta before saving talk.
+ *
+ * @since  1.2.0
+ */
+function wct_talks_update_last_status( $data, $postarr ) { 
+	// Checks if we are in 'talks' CPT and if not, abort
+	if( $data['post_type'] !== 'talks' ) :
+		return $data;
+	endif;
+	// Gets current talk status
+	$current_post_status = get_post_status( $postarr['ID'] );
+	// Updates last talk status meta
+	update_post_meta( $postarr['ID'], '_wct_talks_last_status', $current_post_status );
+	return $data;
+}
+
+/**
+ * Run a scheduled task to send emails for talks status updated the last 24h.
+ *
+ * @since  1.2.0
+ */
+function wct_talks_updated_talks_send_emails() {
+	// Gets all talks modified the last 24h
+	$args = array(
+		'post_type'			=> 'talks',
+		'post_status'		=> 'any',
+		'posts_per_page' 	=> -1,
+		'date_query' => array(
+			array(
+				'column' => 'post_modified_gmt',
+				'after'  => '1 day ago',
+			),
+		),
+	);
+	$query_talks = new WP_Query( $args );
+	if ( $query_talks->have_posts() ) :
+		while ( $query_talks->have_posts() ) :
+			$query_talks->the_post();
+			// Get talk infos
+			$talk_title = get_the_title();
+			$talk_author_email = get_the_author_meta( 'user_email' );
+			$last_status = get_post_meta( get_the_ID(), '_wct_talks_last_status', true );
+			$current_status = get_post_status( get_the_ID() );
+			// Checks if status has changed
+			if ( !empty( $last_status ) && $current_status != $last_status && $last_status != 'draft' ) : 
+				// Sends wp_mail to each author
+				wp_mail( 
+					$talk_author_email, 
+					'Status change for your talk "' . $talk_title . '"', 
+					'Your "' . $talk_title . '" talk status as changed from status "' . $last_status . '" to status "' . $current_status . '"'
+				);
+			endif;
+		endwhile;
+	endif;
+	wp_reset_postdata();
+}
+
 /** Actions handler **********************************************************/
 
 /**

@@ -51,6 +51,9 @@ add_filter( 'user_contactmethods', 'wct_users_contactmethods', 10, 1 );
 // Filter comment feeds
 add_filter( 'comment_feed_limits', 'wct_comment_feed_limits', 10, 2 );
 
+// Update last_status post meta before saving talks
+add_filter( 'wp_insert_post_data', 'wct_talks_update_last_status', 10, 3 );
+
 // Formating loop tags
 add_filter( 'wct_talks_get_title', 'wptexturize'   );
 add_filter( 'wct_talks_get_title', 'convert_chars' );
