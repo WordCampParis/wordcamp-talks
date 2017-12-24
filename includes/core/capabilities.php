@@ -182,7 +182,7 @@ function wct_map_meta_caps( $caps = array(), $cap = '', $user_id = 0, $args = ar
 
 			case 'publish_talks' :
 				if ( ! empty( $user_id ) ) {
-					if ( ! wct_has_talks_submission_ended() ) {
+					if ( ! wct_has_talks_submission_ended() || wct_is_current_user_profile() ) {
 						$caps = array( 'exist' );
 					} else {
 						$caps = array( 'manage_options' );
