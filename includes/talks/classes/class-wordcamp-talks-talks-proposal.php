@@ -194,12 +194,13 @@ class WordCamp_Talks_Talks_Proposal {
 		}
 
 		$post_args = array(
-			'post_author'  => $this->author,
-			'post_title'   => $this->title,
-			'post_type'    => wct_get_post_type(),
-			'post_content' => $this->description,
-			'post_status'  => $this->status,
-			'tax_input'    => $this->taxonomies,
+			'post_author'    => $this->author,
+			'post_title'     => $this->title,
+			'post_type'      => wct_get_post_type(),
+			'post_content'   => $this->description,
+			'post_status'    => $this->status,
+			'tax_input'      => $this->taxonomies,
+			'comment_status' => 'open',
 		);
 
 		// Update.
