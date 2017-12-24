@@ -363,6 +363,10 @@ function wct_talks_not_found() {
 
 		} elseif ( wct_has_talks_submission_ended() ) {
 			$output = __( 'Oh no it is too late! Talk submissions are closed.', 'wordcamp-talks' );
+
+			if ( ! is_user_logged_in() ) {
+				$output = sprintf( __( '%s to display the Talk Proposals.', 'wordcamp-talks' ), $sign_in );
+			}
 		}
 
 		/**
