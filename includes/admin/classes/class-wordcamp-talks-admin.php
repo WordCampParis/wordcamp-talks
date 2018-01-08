@@ -1092,7 +1092,12 @@ class WordCamp_Talks_Admin {
 	 * @return array            restricted user's caps.
 	 */
 	public function filter_has_cap( $all_caps = array() ) {
-		return array( 'read_private_talks' => true, 'edit_others_talks' => true );
+		return array_fill_keys( array(
+			'read_private_talks',
+			'edit_others_talks',
+			'view_talk_rates',
+			'view_talk_comments'
+		), true );
 	}
 
 	/**
