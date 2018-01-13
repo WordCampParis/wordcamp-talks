@@ -49,26 +49,6 @@ function wct_parse_query( $posts_query = null ) {
 			wct_set_global( 'orderby', 'rates_count' );
 		}
 
-		// Build a meta query to filter by workflow state
-		if ( ! empty( $_REQUEST['workflow_states'] ) ) {
-			$admin_meta_query = array();
-
-			if ( 'pending' == $_REQUEST['workflow_states'] ) {
-				$admin_meta_query = array(
-					'key'     => '_wc_talks_workflow_state',
-					'compare' => 'NOT EXISTS'
-				);
-			} else {
-				$admin_meta_query = array(
-					'key'     => '_wc_talks_workflow_state',
-					'compare' => '=',
-					'value'   => $_REQUEST['workflow_states']
-				);
-			}
-
-			$posts_query->set( 'meta_query', array( $admin_meta_query ) );
-		}
-
 		do_action( 'wct_admin_request', $posts_query );
 
 		return;
