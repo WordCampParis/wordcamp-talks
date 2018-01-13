@@ -89,6 +89,12 @@ function wct_parse_query( $posts_query = null ) {
 		// Make sure the post_type is set to talks.
 		$posts_query->set( 'post_type', $talk_post_type );
 
+		// If the user is not logged in send him to the login screen
+		if ( ! is_user_logged_in() ) {
+			wp_safe_redirect( wp_login_url( wct_users_get_user_profile_url( $user->ID, $user->user_nicename ) ) );
+			exit();
+		}
+
 		// Are we requesting user talks.
 		if ( user_can( $user->ID, 'publish_talks' ) ) {
 			$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
