@@ -1061,7 +1061,7 @@ function wct_count_ratings( $id = 0, $user_id = 0, $details = false ) {
 	}
 
 	if ( ! empty( $retarray['users'] ) ) {
-		$retarray['average'] = number_format( $retarray['average'] / count( $retarray['users'] ), 1 );
+		$retarray['average'] = number_format( $retarray['average'] / count( $retarray['users'] ), 2 );
 	} else {
 		$retarray['average'] = 0;
 	}
@@ -1204,7 +1204,7 @@ function wct_ajax_rate() {
 
 	// If the user can't see other ratings, simply return the rating he just gave.
 	if ( ! current_user_can( 'view_talk_rates' ) ) {
-		$new_average_rate = number_format( $rate, 1 );
+		$new_average_rate = number_format( $rate, 2 );
 	}
 
 	if ( empty( $new_average_rate ) ) {

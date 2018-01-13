@@ -978,7 +978,7 @@ class WordCamp_Talks_Admin {
 					'%1$s members rated the Talk Proposal. Its Average rating is: %2$s',
 					$users_count,
 					'wordcamp-talks'
-				), number_format_i18n( $users_count ), number_format_i18n( $ratings_stats['average'], 1 ) ) ); ?>
+				), number_format_i18n( $users_count ), number_format_i18n( $ratings_stats['average'], 2 ) ) ); ?>
 			</p>
 			<ul class="admin-talk-rates">
 				<?php foreach ( $hintlist as $hintlabel ) :

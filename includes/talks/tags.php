@@ -790,7 +790,7 @@ function wct_talks_the_average_rating() {
 		}
 
 		if ( ! empty( $rating ) && is_numeric( $rating ) ) {
-			$rating = number_format_i18n( $rating, 1 );
+			$rating = number_format_i18n( $rating, 2 );
 		}
 
 		return $rating;
