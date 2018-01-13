@@ -147,6 +147,7 @@ class WordCamp_Talks_Admin {
 
 		// Add the Workflow inline edit field
 		add_action( 'quick_edit_custom_box', array( $this, 'inline_edit_workflow' ), 10, 2 );
+		add_action( 'bulk_edit_custom_box',  array( $this, 'inline_edit_workflow' ), 10, 2 );
 
 		// Do some global stuff here (custom css rule)
 		add_action( 'admin_head', array( $this, 'admin_head' ), 10 );
@@ -165,9 +166,6 @@ class WordCamp_Talks_Admin {
 
 		// Filter the WP_List_Table views to include custom views.
 		add_filter( "views_edit-{$this->post_type}", array( $this, 'talk_views' ), 10, 1 );
-
-		// temporarly remove bulk edit
-		add_filter( "bulk_actions-edit-{$this->post_type}", array( $this, 'talk_bulk_actions' ), 10, 1 );
 
 		// Talks column headers.
 		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'column_headers' ) );
@@ -661,21 +659,6 @@ class WordCamp_Talks_Admin {
 		if ( is_a( $current_screen, 'WP_Screen' ) && ! empty( $taxnow ) && in_array( $taxnow, array( wct_get_tag(), wct_get_category() ) ) ) {
  			$current_screen->post_type = $this->post_type;
  		}
-	}
-
-	/**
-	 * Restrict Bulk actions to only keep the delete one.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $bulk_actions list of available bulk actions.
-	 * @return array                the new list.
-	 */
-	public function talk_bulk_actions( $bulk_actions = array() ) {
-		if ( in_array( 'edit', array_keys( $bulk_actions ) ) ) {
-			unset( $bulk_actions['edit'] );
-		}
-		return $bulk_actions;
 	}
 
 	/**
@@ -1925,7 +1908,10 @@ class WordCamp_Talks_Admin {
 				}
 
 				body.post-type-<?php echo $post_type;?> .inline-edit-status,
-				body.post-type-<?php echo $post_type;?> .inline-edit-col-left .inline-edit-group {
+				body.post-type-<?php echo $post_type;?> .inline-edit-col-left .inline-edit-group,
+				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-col,
+				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-tags,
+				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-center {
 					display: none;
 				}
 
