@@ -1317,6 +1317,8 @@ function wct_users_signup_user( $exit = true ) {
 
 	// User is created, now we need to eventually edit him
 	} else {
+		// The user registered to submit talks.
+		update_user_meta( $user, '_wc_talks_registered', 1 );
 
 		if ( ! empty( $edit_user ) )  {
 

@@ -131,6 +131,10 @@ class WordCamp_Talks_Admin {
 		// Display upgrade notices
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 
+		// Display speaker welcome notice
+		add_action( 'all_admin_notices',                array( $this, 'speaker_notice'         ) );
+		add_action( 'wp_ajax_wct_update_speaker_panel', array( $this, 'dismiss_speaker_notice' ) );
+
 		// Register the settings
 		add_action( 'admin_init', array( $this, 'register_admin_settings' ) );
 
@@ -559,6 +563,74 @@ class WordCamp_Talks_Admin {
 				);
 			}
 		}
+	}
+
+	/**
+	 * Displays a dismissible welcome panel to the speaker.
+	 *
+	 * @since 1.1.6
+	 */
+	public function speaker_notice() {
+		if ( current_user_can( 'rate_talks' ) ) {
+			return;
+		}
+
+		if ( ! get_user_meta( get_current_user_id(), '_wc_talks_registered' ) ) {
+			return;
+		}
+
+		// Enqueue the welcome script in the footer.
+		wp_enqueue_script ( 'wc-talks-welcome-script', wct_get_js_script( 'welcome' ), array( 'jquery' ), wct_get_version(), true );
+		wp_localize_script( 'wc-talks-welcome-script', 'wctWelcome', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
+		) );
+
+		$nav_items = wct_get_nav_items();
+		?>
+		<div id="welcome-speaker-panel" class="welcome-panel welcome-speaker">
+			<?php wp_nonce_field( 'welcome-speaker-nonce', 'welcomespeakernonce', false ); ?>
+			<a class="welcome-panel-close" href="#" aria-label="<?php esc_attr_e( 'Dismiss the welcome panel', 'wordcamp-talks' ); ?>"><?php _e( 'Dismiss', 'wordcamp-talks' ); ?></a>
+
+			<div class="welcome-panel-content">
+				<h2><?php printf( esc_html__( 'Welcome to %s !', 'wordcamp-talks' ), get_site_option( 'blogname' ) ); ?></h2>
+				<p class="about-description"><?php _e( 'Here are some links to help you get started:', 'wordcamp-talks' ); ?></p>
+				<div class="welcome-panel-column-container">
+					<div class="welcome-panel-column">
+						<h3><?php esc_html_e( 'Can\'t wait to submit your talk(s)?', 'wordcamp-talks' ); ?></h3>
+						<a class="button button-primary button-hero" href="<?php echo esc_url( $nav_items['wct_new']['url'] ); ?>"><?php echo esc_html( $nav_items['wct_new']['title'] ); ?></a>
+					</div>
+					<div class="welcome-panel-column welcome-panel-last">
+						<h3><?php _e( 'Next Steps', 'wordcamp-talks' ); ?></h3>
+						<ul>
+							<li>
+								<span class="dashicons dashicons-id"></span>
+								<a href="<?php echo esc_url( $nav_items['wct_my_profile']['url'] ); ?>"><?php esc_html_e( 'Make sure your profile is up to date!', 'wordcamp-talks' ); ?></a>
+								<p class="description"><?php esc_html_e( 'If your talk is selected, we will use the biographical infos you added to your profile.', 'wordcamp-talks' ); ?></p>
+							</li>
+							<li>
+								<span class="dashicons dashicons-info"></span>
+								<a href="<?php echo esc_url( $nav_items['wct_archive']['url'] ); ?>"><?php esc_html_e( 'Follow the status of your submitted talks.', 'wordcamp-talks' ); ?></a>
+								<p class="description"><?php esc_html_e( 'Check your submitted talk(s) as often as you wish: prepended to their title you will find their current status in the selection process.', 'wordcamp-talks' ); ?></p>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Dismiss permanently the speaker notice
+	 *
+	 * @since 1.1.6
+	 */
+	public function dismiss_speaker_notice() {
+		check_ajax_referer( 'welcome-speaker-nonce', 'welcomespeakernonce' );
+
+		delete_user_meta( get_current_user_id(), '_wc_talks_registered' );
+
+		wp_die( 1 );
 	}
 
 	/**
@@ -1828,6 +1900,14 @@ class WordCamp_Talks_Admin {
 				margin-bottom: 1.5em;
 				width: 100%;
 				text-align: center;
+			}
+
+			.welcome-speaker .welcome-panel-last {
+				width: 64%;
+			}
+
+			.welcome-speaker span.dashicons {
+				vertical-align: text-bottom;
 			}
 
 			<?php if ( wct_is_admin() && ! wct_is_rating_disabled() ) : ?>
