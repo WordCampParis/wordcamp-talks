@@ -277,6 +277,15 @@ class WordCamp_Talks_Admin {
 					array( $this, 'export_selected' )
 				);
 			}
+
+			$title = __( 'WordCamp Talks', 'wordcamp-talks' );
+			add_management_page(
+				$title,
+				$title,
+				'manage_options',
+				'wct-tools',
+				array( $this, 'tools' )
+			);
 		}
 	}
 
@@ -2184,6 +2193,47 @@ class WordCamp_Talks_Admin {
 		add_filter( 'get_terms',        array( $this, 'nullify' ) );
 
 		return $args;
+	}
+
+	/**
+	 * Display the available tools. For now, it only informs whether speakers used
+	 * a gravatar email, set their display name and bios.
+	 * 
+	 * @since 1.1.7
+	 */
+	public function tools() {
+		$speakers = get_users( array( 'role' => 'subscriber' ) );
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'WordCamp Talks tools', 'wordcamp-talks' ); ?></h1>
+			<hr class="wp-header-end">
+			<table class="wp-list-table widefat fixed striped" style="margin-top: 8px;">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'User Login', 'wordcamp-talks' ); ?></th>
+						<th><?php esc_html_e( 'Has a display name', 'wordcamp-talks' ); ?></th>
+						<th><?php esc_html_e( 'Has a description', 'wordcamp-talks' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+
+				<?php foreach ( $speakers as $speaker ) : ?>
+
+					<tr>
+						<td class="username column-username">
+							<?php echo get_avatar( $speaker->ID, 32 ); ?>
+							<?php printf( '<a href="mailto:%1$s">%2$s</a>', sanitize_email( $speaker->user_email ), esc_html( $speaker->user_login ) ); ?>
+						</td>
+						<td><?php echo ( $speaker->user_login !== $speaker->display_name ); ?></td>
+						<td><?php echo ( !! $speaker->description ); ?></td>
+					</tr>
+
+				<?php endforeach ; ?>
+
+				</tbody>
+			</table>
+		</div>
+		<?php
 	}
 }
 
