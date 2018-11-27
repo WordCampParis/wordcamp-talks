@@ -249,6 +249,20 @@ function wct_load_textdomain() {
 }
 
 /**
+ * Load Block Editor's plugin JavaScript translations
+ *
+ * @since 2.0.0
+ */
+function wct_load_block_editor_translations() {
+	if ( ! function_exists( 'wp_set_script_translations' ) ) {
+		return;
+	}
+
+	wp_set_script_translations( 'wordcamp-talks-editor-sidebar', 'wordcamp-talks', wct_get_plugin_dir() . 'languages/js' );
+}
+add_action( 'admin_enqueue_scripts', 'wct_load_block_editor_translations' );
+
+/**
  * Main archive page title.
  *
  * @since  1.0.0
@@ -313,6 +327,7 @@ function wct_post_type_register_args() {
 		'capabilities'        => wct_get_post_type_caps(),
 		'delete_with_user'    => true,
 		'can_export'          => true,
+		'show_in_rest'        => true,
 	);
 }
 
@@ -608,7 +623,31 @@ function wct_register_objects() {
 			wct_tag_register_args()
 		)
 	);
+
+	if ( function_exists( 'register_block_type' ) ) {
+		// Block Editor's plugin
+		wp_register_script(
+			'wordcamp-talks-editor-sidebar',
+			plugins_url( 'dist/index.js', dirname( dirname( __FILE__ ) ) ),
+			array( 'wp-edit-post', 'wp-plugins', 'wp-i18n' ),
+			wct_get_version()
+		);
+	}
 }
+
+/**
+ * Enqueue scripts for the Block Editor
+ *
+ * @since 2.0.0
+ */
+function wct_block_editor_enqueue_scripts() {
+	if ( ! function_exists( 'register_block_type' ) || wct_get_post_type() !== get_post_type() ) {
+		return false;
+	}
+
+	wp_enqueue_script( 'wordcamp-talks-editor-sidebar' );
+}
+add_action( 'enqueue_block_editor_assets', 'wct_block_editor_enqueue_scripts' );
 
 /** Urls **********************************************************************/
 
