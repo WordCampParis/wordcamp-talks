@@ -323,12 +323,37 @@ function wct_post_type_register_args() {
 			wct_get_category(),
 			wct_get_tag()
 		),
-		'capability_type'     => array( 'talk', 'talks' ),
-		'capabilities'        => wct_get_post_type_caps(),
-		'delete_with_user'    => true,
-		'can_export'          => true,
-		'show_in_rest'        => true,
+		'capability_type'       => array( 'talk', 'talks' ),
+		'capabilities'          => wct_get_post_type_caps(),
+		'delete_with_user'      => true,
+		'can_export'            => true,
+		'show_in_rest'          => true,
+		'rest_controller_class' => 'WordCamp_Talks_Talks_REST_Controller',
 	);
+}
+
+/**
+ * Get the Talk statuses
+ *
+ * @since  1.1.0
+ *
+ * @return array The list of talk statuses.
+ */
+function wct_get_statuses() {
+	/**
+	 * Filter here to add statuses.
+	 *
+	 * @since  1.1.0
+	 *
+	 * @param array $value The list of talk statuses.
+	 */
+	return apply_filters( 'wct_get_statuses', array(
+		'wct_pending'   => __( 'Pending',      'wordcamp-talks' ),
+		'wct_shortlist' => __( 'Short-listed', 'wordcamp-talks' ),
+		'wct_selected'  => __( 'Selected',     'wordcamp-talks' ),
+		'wct_rejected'  => __( 'Rejected',     'wordcamp-talks' ),
+		'wct_backup'    => __( 'Backup',       'wordcamp-talks' ),
+	) );
 }
 
 /**
@@ -358,31 +383,8 @@ function wct_post_type_register_labels() {
 			'filter_items_list'     => __( 'Filter Talk Proposals list',         'wordcamp-talks' ),
 			'items_list_navigation' => __( 'Talk Proposals list navigation',     'wordcamp-talks' ),
 			'items_list'            => __( 'Talk Proposals list',                'wordcamp-talks' ),
+			'stati'                 => wct_get_statuses(),
 		)
-	) );
-}
-
-/**
- * Get the Talk statuses
- *
- * @since  1.1.0
- *
- * @return array The list of talk statuses.
- */
-function wct_get_statuses() {
-	/**
-	 * Filter here to add statuses.
-	 *
-	 * @since  1.1.0
-	 *
-	 * @param array $value The list of talk statuses.
-	 */
-	return apply_filters( 'wct_get_statuses', array(
-		'wct_pending'   => __( 'Pending',      'wordcamp-talks' ),
-		'wct_shortlist' => __( 'Short-listed', 'wordcamp-talks' ),
-		'wct_selected'  => __( 'Selected',     'wordcamp-talks' ),
-		'wct_rejected'  => __( 'Rejected',     'wordcamp-talks' ),
-		'wct_backup'    => __( 'Backup',       'wordcamp-talks' ),
 	) );
 }
 
