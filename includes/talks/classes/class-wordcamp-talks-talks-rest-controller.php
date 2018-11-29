@@ -37,6 +37,23 @@ class WordCamp_Talks_Talks_REST_Controller extends WP_REST_Posts_Controller {
 
 		return $response;
 	}
+
+	/**
+	 * Updates a single talk.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function update_item( $request ) {
+		$talk_status = $request->get_param( 'talk_status' );
+		if ( wct_is_supported_statuses( $talk_status ) ) {
+			$request->set_param( 'status', $talk_status );
+		}
+
+		return parent::update_item( $request );
+	}
 }
 
 endif;

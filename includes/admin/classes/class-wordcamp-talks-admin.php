@@ -363,7 +363,9 @@ class WordCamp_Talks_Admin {
 				$this->post_type,
 				$m['context'],
 				$m['priority'],
-				$m['callback_args']
+				array_merge( $m['callback_args'], array(
+					'__back_compat_meta_box' => true,
+				) )
 			);
 		}
 

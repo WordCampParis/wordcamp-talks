@@ -648,6 +648,15 @@ function wct_block_editor_enqueue_scripts() {
 	}
 
 	wp_enqueue_script( 'wordcamp-talks-editor-sidebar' );
+	wp_add_inline_style( 'wp-edit-post', '
+		.edit-post-post-visibility, .edit-post-post-schedule { display: none }
+		.components-panel__row.wordcamp-talks-status-info .components-base-control__label,
+		.components-panel__row.wordcamp-talks-status-info .components-select-control__input {
+			display: inline-block;
+			max-width: 100%;
+			width: 100%;
+		}
+	' );
 }
 add_action( 'enqueue_block_editor_assets', 'wct_block_editor_enqueue_scripts' );
 
