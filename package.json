@@ -31,8 +31,8 @@
     "node": "~6.6.0"
   },
   "scripts": {
-    "start": "parcel watch src/index.js",
-    "build": "parcel build src/index.js",
+    "start": "parcel watch src/*/*.js",
+    "build": "parcel build src/*/*.js",
     "pot": "po2json languages/js/wordcamp-talks-editor-sidebar-fr_FR.po languages/js/wordcamp-talks-fr_FR-wordcamp-talks-editor-sidebar.json -f jed1.x"
   },
   "keywords": [

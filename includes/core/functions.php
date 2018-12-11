@@ -630,7 +630,14 @@ function wct_register_objects() {
 		// Block Editor's plugin
 		wp_register_script(
 			'wordcamp-talks-editor-sidebar',
-			plugins_url( 'dist/index.js', dirname( dirname( __FILE__ ) ) ),
+			plugins_url( 'dist/stati/index.js', dirname( dirname( __FILE__ ) ) ),
+			array( 'wp-edit-post', 'wp-plugins', 'wp-i18n' ),
+			wct_get_version()
+		);
+
+		wp_register_script(
+			'wordcamp-talks-ratings-sidebar',
+			plugins_url( 'dist/ratings/index.js', dirname( dirname( __FILE__ ) ) ),
 			array( 'wp-edit-post', 'wp-plugins', 'wp-i18n' ),
 			wct_get_version()
 		);
@@ -657,6 +664,10 @@ function wct_block_editor_enqueue_scripts() {
 			width: 100%;
 		}
 	' );
+
+	if ( current_user_can( 'rate_talks' ) ) {
+		wp_enqueue_script( 'wordcamp-talks-ratings-sidebar' );
+	}
 }
 add_action( 'enqueue_block_editor_assets', 'wct_block_editor_enqueue_scripts' );
 
