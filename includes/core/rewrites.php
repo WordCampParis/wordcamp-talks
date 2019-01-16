@@ -104,6 +104,18 @@ function wct_user_to_rate_rewrite_id( $default = 'is_to_rate' ) {
 }
 
 /**
+ * Rewrite id for the user's archive.
+ *
+ * @since 1.0.0
+ *
+ * @param  string $default The rewrite id to use by default.
+ * @return string          The user's to rate rewrite id.
+ */
+function wct_user_archive_rewrite_id( $default = 'is_archive' ) {
+	return apply_filters( 'wct_user_archive_rewrite_id', $default );
+}
+
+/**
  * Rewrite id for the user's talks.
  *
  * @since 1.0.0
@@ -350,6 +362,25 @@ function wct_user_to_rate_slug( $skip_option = false ) {
 
 	if ( ! $skip_option ) {
 		$slug = wct_get_current_slug( 'to_rate', $slug );
+	}
+
+	return $slug;
+}
+
+/**
+ * Customize the user's profile archive slug of the plugin.
+ *
+ * @since  1.2.0
+ *
+ * @param  boolean $skip_option Whether to skip the slug check in DB.
+ * @return string               The user's profile to rate slug.
+ */
+function wct_user_archive_slug( $skip_option = false ) {
+	/* Translators: This string is used in urls, make sure to avoid using special chars */
+	$slug = _x( 'archive', 'default user archive slug', 'wordcamp-talks' );
+
+	if ( ! $skip_option ) {
+		$slug = wct_get_current_slug( 'archive', $slug );
 	}
 
 	return $slug;

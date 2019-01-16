@@ -95,9 +95,10 @@ function wct_parse_query( $posts_query = null ) {
 			exit();
 		}
 
-		// Are we requesting user talks.
+		// Are we requesting user talks or archive.
 		if ( user_can( $user->ID, 'publish_talks' ) ) {
-			$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
+			$user_talks   = $posts_query->get( wct_user_talks_rewrite_id() );
+			$user_archive = $posts_query->get( wct_user_archive_rewrite_id() );
 		}
 
 		if ( user_can( $user->ID, 'rate_talks' ) ) {
@@ -157,12 +158,19 @@ function wct_parse_query( $posts_query = null ) {
 			 */
 			$posts_query->set( 'p', -1 );
 
-		} elseif ( ! empty( $user_talks ) ) {
+		} elseif ( ! empty( $user_talks ) || ! empty( $user_archive ) ) {
 			// We are viewing user's talks
-			wct_set_global( 'is_user_talks', true );
+			wct_set_global( 'is_user_talks', (bool) $user_talks );
+
+			// We are viewing user's archive
+			wct_set_global( 'is_user_archive', (bool) $user_archive );
 
 			// Set the author of the talks as the displayed user
 			$posts_query->set( 'author', $user->ID  );
+
+			if ( wct_is_user_profile_archive() ) {
+				$posts_query->set( 'post_status', 'wct_archive' );
+			}
 
 		} else {
 			wct_set_global( 'is_user_home', true );
@@ -320,8 +328,14 @@ function wct_parse_query( $posts_query = null ) {
 		wct_set_global( 'is_talks', true );
 
 		// By default post status is publish.
-		if ( is_user_logged_in() ) {
-			$posts_query->set( 'post_status', wct_talks_get_status() );
+		if ( is_user_logged_in() && ! wct_is_user_profile_archive() ) {
+			$stati = wct_talks_get_status();
+
+			if ( is_singular() ) {
+				$stati[] = 'wct_archive';
+			}
+
+			$posts_query->set( 'post_status', $stati );
 		}
 
 		// If the user is a regular speaker, restrict the list to his own talks.
@@ -628,6 +642,17 @@ function wct_is_user_profile_to_rate() {
  */
 function wct_is_user_profile_talks() {
 	return (bool) wct_get_global( 'is_user_talks' );
+}
+
+/**
+ * Are we viewing archive in user's profile?
+ *
+ * @since 1.2.0
+ *
+ * @return boolean True if viewing archive in the user's profile. False otherwise.
+ */
+function wct_is_user_profile_archive() {
+	return (bool) wct_get_global( 'is_user_archive' );
 }
 
 /**

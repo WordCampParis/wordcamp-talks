@@ -66,6 +66,7 @@ class WordCamp_Talks_Core_Rewrites {
 		$this->user_rates_rid    = wct_user_rates_rewrite_id();
 		$this->user_to_rate_rid  = wct_user_to_rate_rewrite_id();
 		$this->user_talks_rid    = wct_user_talks_rewrite_id();
+		$this->user_archive_rid  = wct_user_archive_rewrite_id();
 		$this->cpage_rid         = wct_cpage_rewrite_id();
 		$this->action_rid        = wct_action_rewrite_id();
 		$this->search_rid        = wct_search_rewrite_id();
@@ -77,6 +78,7 @@ class WordCamp_Talks_Core_Rewrites {
 		$this->user_rates_slug    = wct_user_rates_slug( true );
 		$this->user_to_rate_slug  = wct_user_to_rate_slug( true );
 		$this->user_talks_slug    = wct_user_talks_slug( true );
+		$this->user_archive_slug  = wct_user_archive_slug( true );
 		$this->cpage_slug         = wct_cpage_slug( true );
 		$this->action_slug        = wct_action_slug( true );
 	}
@@ -108,6 +110,7 @@ class WordCamp_Talks_Core_Rewrites {
 		add_rewrite_tag( '%' . $this->user_rates_rid    . '%', '([1]{1,})' );
 		add_rewrite_tag( '%' . $this->user_to_rate_rid  . '%', '([1]{1,})' );
 		add_rewrite_tag( '%' . $this->user_talks_rid    . '%', '([1]{1,})' );
+		add_rewrite_tag( '%' . $this->user_archive_rid  . '%', '([1]{1,})' );
 		add_rewrite_tag( '%' . $this->cpage_rid         . '%', '([^/]+)'   );
 		add_rewrite_tag( '%' . $this->action_rid        . '%', '([^/]+)'   );
 		add_rewrite_tag( '%' . $this->search_rid        . '%', '([^/]+)'   );
@@ -141,6 +144,10 @@ class WordCamp_Talks_Core_Rewrites {
 		$user_talks_rule       = '/([^/]+)/' . $this->user_talks_slug . '/?$';
 		$user_talks_paged_rule = '/([^/]+)/' . $this->user_talks_slug . '/' . $page_slug . '/?([0-9]{1,})/?$';
 
+		// User Archive
+		$user_archive_rule       = '/([^/]+)/' . $this->user_archive_slug . '/?$';
+		$user_archive_paged_rule = '/([^/]+)/' . $this->user_archive_slug . '/' . $page_slug . '/?([0-9]{1,})/?$';
+
 		// User rules
 		add_rewrite_rule( $this->user_slug . $user_comments_paged_rule, 'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_comments_rid . '=1&' . $this->cpage_rid . '=$matches[2]', $priority );
 		add_rewrite_rule( $this->user_slug . $user_comments_rule,       'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_comments_rid . '=1',                                      $priority );
@@ -148,6 +155,8 @@ class WordCamp_Talks_Core_Rewrites {
 		add_rewrite_rule( $this->user_slug . $user_rates_rule,          'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_rates_rid .    '=1',                                      $priority );
 		add_rewrite_rule( $this->user_slug . $user_to_rate_paged_rule,  'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_to_rate_rid .  '=1&' . $this->page_rid . '=$matches[2]',  $priority );
 		add_rewrite_rule( $this->user_slug . $user_to_rate_rule,        'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_to_rate_rid .  '=1',                                      $priority );
+		add_rewrite_rule( $this->user_slug . $user_archive_paged_rule,  'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_archive_rid .  '=1&' . $this->page_rid . '=$matches[2]',  $priority );
+		add_rewrite_rule( $this->user_slug . $user_archive_rule,        'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_archive_rid .  '=1',                                      $priority );
 		add_rewrite_rule( $this->user_slug . $user_talks_paged_rule,    'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_talks_rid   .  '=1&' . $this->page_rid . '=$matches[2]',  $priority );
 		add_rewrite_rule( $this->user_slug . $user_talks_rule,          'index.php?' . $this->user_rid . '=$matches[1]&' . $this->user_talks_rid   .  '=1',                                      $priority );
 		add_rewrite_rule( $this->user_slug . $root_rule,                'index.php?' . $this->user_rid . '=$matches[1]',                                                                         $priority );
@@ -204,6 +213,7 @@ class WordCamp_Talks_Core_Rewrites {
 			'rate'          => wct_user_rates_slug( true ),
 			'to_rate'       => wct_user_to_rate_slug( true ),
 			'user_comments' => wct_user_comments_slug( true ),
+			'archive'       => wct_user_archive_slug( true ),
 			'action'        => wct_get_action_slug( true ),
 			'add'           => wct_addnew_slug( true ),
 			'edit'          => wct_edit_slug( true ),
@@ -211,7 +221,7 @@ class WordCamp_Talks_Core_Rewrites {
 			'cpage'         => wct_cpage_slug( true ),
 		);
 
-		if( update_option( '_wc_talks_slugs', $slugs ) ) {
+		if ( update_option( '_wc_talks_slugs', $slugs ) ) {
 			wct()->slugs = $slugs;
 		}
 	}
