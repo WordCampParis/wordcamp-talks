@@ -319,6 +319,16 @@ function wct_parse_query( $posts_query = null ) {
 	if ( $talk_post_type === $posts_query->get( 'post_type' ) ) {
 		wct_set_global( 'is_talks', true );
 
+		// By default post status is publish.
+		if ( is_user_logged_in() ) {
+			$posts_query->set( 'post_status', wct_talks_get_status() );
+		}
+
+		// If the user is a regular speaker, restrict the list to his own talks.
+		if ( ! current_user_can( 'read_private_talks' ) && ! wct_is_user_profile_talks() ) {
+			$posts_query->set( 'author', wct_users_current_user_id()  );
+		}
+
 		// Reset the pagination
 		if ( -1 !== $posts_query->get( 'p' ) ) {
 			$posts_query->set( 'posts_per_page', wct_talks_per_page() );
