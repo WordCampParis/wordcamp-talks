@@ -694,6 +694,10 @@ function wct_talks_the_talk_comment_link( $zero = false, $one = false, $more = f
 		$output = '';
 		$talk = wct()->query_loop->talk;
 
+		if ( 'wct_archive' === get_post_status( $talk->ID ) ) {
+			return '';
+		}
+
 		if ( false === $zero ) {
 			$zero = __( 'No Comments', 'wordcamp-talks' );
 		}
@@ -806,13 +810,15 @@ function wct_talks_the_average_rating() {
  * @param  string $css_class  The name of the css classes to use.
  */
 function wct_talks_the_rating_link( $zero = false, $more = false, $css_class = '' ) {
+	$talk_id = wct()->query_loop->talk->ID;
+
 	// Bail if ratings are disabled
-	if ( wct_is_rating_disabled() || ! current_user_can( 'rate_talks' ) ) {
+	if ( wct_is_rating_disabled() || ! current_user_can( 'rate_talks' ) || 'wct_archive' === get_post_status( $talk_id ) ) {
 		return false;
 	}
 
 	if ( wct_is_single_talk() ) {
-		echo '<div id="rate" data-talk="' . wct()->query_loop->talk->ID . '"></div><div class="rating-info"></div>';
+		echo '<div id="rate" data-talk="' . $talk_id . '"></div><div class="rating-info"></div>';
 	} else {
 		echo wct_talks_get_rating_link( $zero, $more, $css_class );
 	}

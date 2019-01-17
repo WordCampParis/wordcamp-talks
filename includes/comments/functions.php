@@ -238,7 +238,7 @@ function wct_comments_open( $open = true, $talk_id = 0 ) {
 	if ( ! wct_is_talks() ) {
 		return $open;
 	} else {
-		$open = current_user_can( 'comment_talks' );
+		$open = 'wct_archive' !== get_post_status( $talk_id ) && current_user_can( 'comment_talks' );
 	}
 
 	return $open;
