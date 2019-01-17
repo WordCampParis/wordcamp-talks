@@ -49,6 +49,10 @@ function wct_parse_query( $posts_query = null ) {
 			wct_set_global( 'orderby', 'rates_count' );
 		}
 
+		if ( ! isset( $_GET['post_status'] ) ) {
+			$posts_query->set( 'post_status', wct_talks_get_status() );
+		}
+
 		do_action( 'wct_admin_request', $posts_query );
 
 		return;
