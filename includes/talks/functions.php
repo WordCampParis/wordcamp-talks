@@ -464,7 +464,7 @@ function wct_talks_can_edit( $talk = null ) {
 	 */
 	$early_can_edit = apply_filters( 'wct_talks_pre_can_edit', false, $talk );
 
-	if ( ! empty( $early_can_edit ) || is_super_admin() ) {
+	if ( ! empty( $early_can_edit ) || is_super_admin() || 'wct_archive' === get_post_status( $talk->ID ) ) {
 		return current_user_can( 'edit_talk', $talk->ID );
 	}
 
@@ -614,6 +614,11 @@ function wct_talks_save_talk( $talkarr = array() ) {
 			$to_delete = array_fill_keys( $to_delete, 0 );
 			$talk->metas = array_merge( $talk->metas, $to_delete );
 		}
+	}
+
+	if ( $update && 'wct_archive' === $talk->status ) {
+		$talk->status      = wct_talks_insert_status( $talkarr );
+		$talk->reposted_on = current_time( 'mysql' );
 	}
 
 	/**

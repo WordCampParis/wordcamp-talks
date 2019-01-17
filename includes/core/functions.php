@@ -1054,6 +1054,10 @@ function wct_count_ratings( $id = 0, $user_id = 0, $details = false ) {
 	// Build the stats
 	if ( ! empty( $rates ) && is_array( $rates ) ) {
 		foreach ( $rates as $rate => $users ) {
+			if ( empty( $users['user_ids'] ) ) {
+				continue;
+			}
+
 			// We need the user's rating
 			if ( ! empty( $user_id ) && in_array( $user_id, (array) $users['user_ids'] ) ) {
 				$user_rating = $rate;
