@@ -710,7 +710,7 @@ function wct_talks_enqueue_scripts() {
 		return;
 	}
 
-	$deps    = array();
+	$deps    = array( 'jquery' );
 	$url     = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 	$js_vars = array(
 		'canonical' => remove_query_arg( array( 'success', 'error', 'info' ), $url ),

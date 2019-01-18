@@ -2,11 +2,11 @@
 # This file is distributed under the GNU/GPL 2.
 msgid ""
 msgstr ""
-"Project-Id-Version: WordCamp Talks 1.2.0-alpha\n"
+"Project-Id-Version: WordCamp Talks 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/WordCampParis/wordcamp-talks/"
 "issues\n"
-"POT-Creation-Date: 2019-01-18 06:38:59+00:00\n"
-"PO-Revision-Date: 2019-01-18 07:46+0100\n"
+"POT-Creation-Date: 2019-01-18 10:55:11+00:00\n"
+"PO-Revision-Date: 2019-01-18 11:56+0100\n"
 "Last-Translator: imath <mathchristo@yahoo.fr>\n"
 "Language-Team: FRENCH <contact@imathi.eu>\n"
 "Language: fr\n"
@@ -21,7 +21,7 @@ msgid "Comments"
 msgstr "﻿Commentaires"
 
 #: includes/admin/classes/class-wordcamp-talks-admin-comments.php:150
-#: includes/core/template-functions.php:833
+#: includes/core/template-functions.php:843
 msgid "Talk Proposal Comments"
 msgstr "Commentaires sur la proposition"
 
@@ -830,8 +830,8 @@ msgstr "Evaluateur Aveugle"
 msgid "Juror"
 msgstr "Juré"
 
-#: includes/core/functions.php:329 includes/core/template-functions.php:784
-#: includes/core/template-functions.php:857
+#: includes/core/functions.php:329 includes/core/template-functions.php:794
+#: includes/core/template-functions.php:867
 msgid "Talk Proposals"
 msgstr "Propositions"
 
@@ -848,12 +848,12 @@ msgid "Add New Talk Proposal"
 msgstr "Ajouter une nouvelle proposition"
 
 #: includes/core/functions.php:335 includes/core/functions.php:531
-#: includes/core/template-functions.php:765
+#: includes/core/template-functions.php:774
 msgid "Edit Talk Proposal"
 msgstr "Modifier la proposition"
 
-#: includes/core/functions.php:336 includes/core/template-functions.php:763
-#: includes/core/template-functions.php:1007
+#: includes/core/functions.php:336 includes/core/template-functions.php:769
+#: includes/core/template-functions.php:1017
 msgid "New Talk Proposal"
 msgstr "Nouvelle proposition"
 
@@ -1203,40 +1203,48 @@ msgstr "Profil utilisateur"
 msgid "New Talk"
 msgstr "Nouvelle proposition"
 
-#: includes/core/template-functions.php:727 includes/talks/tags.php:1214
+#: includes/core/template-functions.php:730 includes/talks/tags.php:1206
+msgid "Recycle Talk"
+msgstr "Recycler la proposition"
+
+#: includes/core/template-functions.php:732 includes/talks/tags.php:1214
 msgid "Edit Talk"
 msgstr "Modifier la proposition"
 
-#: includes/core/template-functions.php:732
-#: includes/core/template-functions.php:782
+#: includes/core/template-functions.php:738
+#: includes/core/template-functions.php:792
 msgid "Create an account"
 msgstr "Créer un compte"
 
-#: includes/core/template-functions.php:767
+#: includes/core/template-functions.php:772
+msgid "Recycle Talk Proposal"
+msgstr "Recycler la proposition"
+
+#: includes/core/template-functions.php:777
 msgid "%s&#39;s profile"
 msgstr "Profil de %s"
 
-#: includes/core/template-functions.php:844
+#: includes/core/template-functions.php:854
 msgid "Page %s"
 msgstr "Page %s"
 
-#: includes/core/template-functions.php:849
+#: includes/core/template-functions.php:859
 msgid "Talk Proposal Ratings"
 msgstr "Evaluations de la proposition"
 
-#: includes/core/template-functions.php:853
+#: includes/core/template-functions.php:863
 msgid "Talk Proposals to rate"
 msgstr "Propositions à évaluer"
 
-#: includes/core/template-functions.php:861 includes/users/functions.php:832
+#: includes/core/template-functions.php:871 includes/users/functions.php:832
 msgid "Profile"
 msgstr "Profil"
 
-#: includes/core/template-functions.php:1013
+#: includes/core/template-functions.php:1023
 msgid "My profile"
 msgstr "Mon profil"
 
-#: includes/core/template-functions.php:1022 includes/talks/tags.php:305
+#: includes/core/template-functions.php:1032 includes/talks/tags.php:305
 msgid "Sign up"
 msgstr "Inscrivez-vous"
 
@@ -1464,10 +1472,6 @@ msgstr "Cette proposition est privée, vous ne pouvez pas voir son contenu."
 #: includes/talks/tags.php:1149
 msgid "hidden name"
 msgstr "nom masqué"
-
-#: includes/talks/tags.php:1206
-msgid "Recycle Talk"
-msgstr "Recycler la proposition"
 
 #: includes/talks/tags.php:1252
 msgid "All Talks"
@@ -2000,12 +2004,12 @@ msgctxt "default comments pagination slug"
 msgid "cpage"
 msgstr "cpage"
 
-#: includes/core/template-functions.php:1031
+#: includes/core/template-functions.php:1041
 msgctxt "customizer menu type label"
 msgid "Custom Link"
 msgstr "Lien personnalisé"
 
-#: includes/core/template-functions.php:1120
+#: includes/core/template-functions.php:1130
 msgctxt "customizer menu section title"
 msgid "Talk Proposals"
 msgstr "Propositions"

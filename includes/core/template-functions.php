@@ -719,12 +719,18 @@ function wct_reset_post_title( $context = '' ) {
 
 		case 'new-talk' :
 			$post_title = '<a href="' . esc_url( wct_get_root_url() ) . '">' . $post_title . '</a>';
-			$post_title .= '<span class="talk-title-sep"></span>' . __( 'New Talk', 'wordcamp-talks' );
+			$post_title .= '<span class="talk-title-sep"></span>' . esc_html__( 'New Talk', 'wordcamp-talks' );
 			break;
 
 		case 'edit-talk' :
 			$post_title = '<a href="' . esc_url( wct_get_root_url() ) . '">' . $post_title . '</a>';
-			$post_title .= '<span class="talk-title-sep"></span>' . __( 'Edit Talk', 'wordcamp-talks' );
+			$post_title .= '<span class="talk-title-sep"></span>';
+			
+			if ( 'wct_archive' === get_post_status() ) {
+				$post_title .= esc_html__( 'Recycle Talk', 'wordcamp-talks' );
+			} else {
+				$post_title .= esc_html__( 'Edit Talk', 'wordcamp-talks' );
+			}
 			break;
 
 		case 'signup' :
@@ -762,7 +768,11 @@ function wct_title( $title_array = array() ) {
 	if ( wct_is_addnew() ) {
 		$new_title[] = esc_attr__( 'New Talk Proposal', 'wordcamp-talks' );
 	} elseif ( wct_is_edit() ) {
-		$new_title[] = esc_attr__( 'Edit Talk Proposal', 'wordcamp-talks' );
+		if ( 'wct_archive' === get_post_status() ) {
+			$new_title[] = esc_attr__( 'Recycle Talk Proposal', 'wordcamp-talks' );
+		} else {
+			$new_title[] = esc_attr__( 'Edit Talk Proposal', 'wordcamp-talks' );
+		}
 	} elseif ( wct_is_user_profile() ) {
 		$new_title[] = sprintf( esc_html__( '%s&#39;s profile', 'wordcamp-talks' ), wct_users_get_displayed_user_displayname() );
 	} elseif ( wct_is_single_talk() ) {
