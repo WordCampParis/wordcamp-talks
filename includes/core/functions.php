@@ -387,6 +387,7 @@ function wct_get_status_label_count( $status = '' ) {
 		'wct_selected'  => _n_noop( 'Selected <span class="count">(%s)</span>', 'Selected <span class="count">(%s)</span>', 'wordcamp-talks' ),
 		'wct_rejected'  => _n_noop( 'Rejected <span class="count">(%s)</span>', 'Rejected <span class="count">(%s)</span>', 'wordcamp-talks' ),
 		'wct_backup'    => _n_noop( 'Backup <span class="count">(%s)</span>', 'Backups <span class="count">(%s)</span>', 'wordcamp-talks' ),
+		'wct_archive'   => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>', 'wordcamp-talks' ),
 	);
 
 	if ( isset( $labels[$status] ) ) {
@@ -560,16 +561,30 @@ function wct_register_objects() {
 	);
 
 	/** Post Statuses ********************************************************/
+	$stati                = (array) wct_get_statuses();
+	$stati['wct_archive'] = __( 'Archived', 'wordcamp-talks' );
+	$stati_common_args    = array(
+		'private'                   => true,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'_is_wc_talk'               => true,
+	);
 
-	foreach ( (array) wct_get_statuses() as $name => $status ) {
-		register_post_status( $name, array(
-			'label'                     => $status,
-			'private'                   => true,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => wct_get_status_label_count( $name ),
-			'_is_wc_talk'               => true,
+	foreach ( $stati as $name => $status ) {
+		$args = array_merge( $stati_common_args, array(
+			'label'       => $status,
+			'label_count' => wct_get_status_label_count( $name ),
 		) );
+
+		if ( 'wct_archive' === $name ) {
+			$args = array_merge( $args, array(
+				'show_in_admin_all_list'    => false,
+				'show_in_admin_status_list' => true,
+				'bulk_action_label'         => __( 'Archive selected talks', 'wordcamp-talks' ),
+			) );
+		}
+
+		register_post_status( $name, $args );
 	}
 
 	/** Taxonomies ************************************************************/
@@ -1039,6 +1054,10 @@ function wct_count_ratings( $id = 0, $user_id = 0, $details = false ) {
 	// Build the stats
 	if ( ! empty( $rates ) && is_array( $rates ) ) {
 		foreach ( $rates as $rate => $users ) {
+			if ( empty( $users['user_ids'] ) ) {
+				continue;
+			}
+
 			// We need the user's rating
 			if ( ! empty( $user_id ) && in_array( $user_id, (array) $users['user_ids'] ) ) {
 				$user_rating = $rate;

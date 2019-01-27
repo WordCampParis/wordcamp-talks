@@ -179,6 +179,9 @@ class WordCamp_Talks_Admin {
 
 		add_filter( 'export_args', array( $this, 'export_sessions' ), 10, 1 );
 
+		add_filter( "bulk_actions-edit-{$this->post_type}",        array( $this, 'talks_bulk_actions' ),        10, 1 );
+		add_filter( "handle_bulk_actions-edit-{$this->post_type}", array( $this, 'talks_handle_bulk_actions' ), 10, 4 );
+
 		/** Specific case: ratings ****************************************************/
 
 		// Only sort by rates & display people who voted if ratings is not disabled.
@@ -2196,9 +2199,63 @@ class WordCamp_Talks_Admin {
 	}
 
 	/**
+	 * Add the Archive bulk action to the list.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param  array  $bulk_actions list of available bulk actions
+	 * @return array                the new list
+	 */
+	public function talks_bulk_actions( $bulk_actions = array() ) {
+		$status = get_post_status_object( 'wct_archive' );
+		if ( ! is_null( $status ) ) {
+			$bulk_actions[ $status->name ] = $status->bulk_action_label;
+		}
+
+		return $bulk_actions;
+	}
+
+	/**
+	 * Handle the Archive bulk actions.
+	 *
+	 * @since  1.2.0
+	 *
+	 * @param  string  $redirect The referer url.
+	 * @param  string  $action   The requested bulk action.
+	 * @param  array   $post_ids The list of post ids
+	 * @return string            The custom redirect url.
+	 */
+	public function talks_handle_bulk_actions( $redirect = '', $action = '', $post_ids = array() ) {
+		if ( 'wct_archive' !== $action || empty( $post_ids ) ) {
+			return $redirect;
+		}
+
+		$idea_ids = array_filter( wp_parse_id_list( $post_ids ) );
+		if ( empty( $idea_ids ) ) {
+			return $redirect;
+		}
+
+		$result = array(
+			'post_type' => $this->post_type,
+			'archived'  => 0,
+		);
+
+		foreach ( $idea_ids as $idea_id ) {
+			if ( wp_update_post( array(
+				'ID'          => $idea_id,
+				'post_status' => $action,
+			) ) ) {
+				$result['archived'] += 1;
+			}
+		}
+
+		return add_query_arg( $result, admin_url( 'edit.php' ) );
+	}
+
+	/**
 	 * Display the available tools. For now, it only informs whether speakers used
 	 * a gravatar email, set their display name and bios.
-	 * 
+	 *
 	 * @since 1.1.7
 	 */
 	public function tools() {

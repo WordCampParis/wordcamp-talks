@@ -86,6 +86,14 @@ class WordCamp_Talks_Talks_Proposal {
 	public $metas;
 
 	/**
+	 * The date the talk is reposted on.
+	 *
+	 * @access  public
+	 * @var     string
+	 */
+	public $reposted_on;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
@@ -181,6 +189,7 @@ class WordCamp_Talks_Talks_Proposal {
 		$this->status      = apply_filters_ref_array( 'wct_status_before_save',      array( $this->status,      &$this ) );
 		$this->taxonomies  = apply_filters_ref_array( 'wct_taxonomies_before_save',  array( $this->taxonomies,  &$this ) );
 		$this->metas       = apply_filters_ref_array( 'wct_metas_before_save',       array( $this->metas,       &$this ) );
+		$this->reposted_on = apply_filters_ref_array( 'wct_reposted_on_before_save',   array( $this->reposted_on, &$this ) );
 
 		// Use this, not the filters above
 		do_action_ref_array( 'wct_before_save', array( &$this ) );
@@ -205,6 +214,12 @@ class WordCamp_Talks_Talks_Proposal {
 
 		// Update.
 		if ( $this->id ) {
+
+			// Recycle the talk
+			if ( $this->reposted_on ) {
+				$post_args['post_date'] = $this->reposted_on;
+			}
+
 			$post_args = array_merge( array(
 				'ID' => $this->id,
 			), $post_args );
@@ -216,7 +231,6 @@ class WordCamp_Talks_Talks_Proposal {
 		}
 
 		if ( ! empty( $result ) && ! empty( $this->metas ) ) {
-
 			foreach ( $this->metas as $meta_key => $meta_value ) {
 				// Do not update these keys.
 				$skip_keys = apply_filters( 'wct_meta_key_skip_save', array( 'keys', 'rates', 'average_rate', 'workflow_state' ) );
@@ -229,6 +243,12 @@ class WordCamp_Talks_Talks_Proposal {
 				} else {
 					wct_talks_update_meta( $result, $meta_key, $meta_value );
 				}
+			}
+
+			// Delete rates for recycled talks.
+			if ( ! empty( $this->reposted_on ) ) {
+				delete_post_meta( $result, '_wc_talks_rates' );
+				delete_post_meta( $result, '_wc_talks_average_rate' );
 			}
 		}
 

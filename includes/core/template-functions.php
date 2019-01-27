@@ -49,6 +49,10 @@ function wct_parse_query( $posts_query = null ) {
 			wct_set_global( 'orderby', 'rates_count' );
 		}
 
+		if ( ! isset( $_GET['post_status'] ) ) {
+			$posts_query->set( 'post_status', wct_talks_get_status() );
+		}
+
 		do_action( 'wct_admin_request', $posts_query );
 
 		return;
@@ -95,9 +99,10 @@ function wct_parse_query( $posts_query = null ) {
 			exit();
 		}
 
-		// Are we requesting user talks.
+		// Are we requesting user talks or archive.
 		if ( user_can( $user->ID, 'publish_talks' ) ) {
-			$user_talks = $posts_query->get( wct_user_talks_rewrite_id() );
+			$user_talks   = $posts_query->get( wct_user_talks_rewrite_id() );
+			$user_archive = $posts_query->get( wct_user_archive_rewrite_id() );
 		}
 
 		if ( user_can( $user->ID, 'rate_talks' ) ) {
@@ -157,12 +162,19 @@ function wct_parse_query( $posts_query = null ) {
 			 */
 			$posts_query->set( 'p', -1 );
 
-		} elseif ( ! empty( $user_talks ) ) {
+		} elseif ( ! empty( $user_talks ) || ! empty( $user_archive ) ) {
 			// We are viewing user's talks
-			wct_set_global( 'is_user_talks', true );
+			wct_set_global( 'is_user_talks', (bool) $user_talks );
+
+			// We are viewing user's archive
+			wct_set_global( 'is_user_archive', (bool) $user_archive );
 
 			// Set the author of the talks as the displayed user
 			$posts_query->set( 'author', $user->ID  );
+
+			if ( wct_is_user_profile_archive() ) {
+				$posts_query->set( 'post_status', 'wct_archive' );
+			}
 
 		} else {
 			wct_set_global( 'is_user_home', true );
@@ -318,6 +330,22 @@ function wct_parse_query( $posts_query = null ) {
 	// Finally if post_type is talks, then we're in a plugin's area.
 	if ( $talk_post_type === $posts_query->get( 'post_type' ) ) {
 		wct_set_global( 'is_talks', true );
+
+		// By default post status is publish.
+		if ( is_user_logged_in() && ! wct_is_user_profile_archive() ) {
+			$stati = wct_talks_get_status();
+
+			if ( is_singular() ) {
+				$stati[] = 'wct_archive';
+			}
+
+			$posts_query->set( 'post_status', $stati );
+		}
+
+		// If the user is a regular speaker, restrict the list to his own talks.
+		if ( ! current_user_can( 'read_private_talks' ) && ! wct_is_user_profile_talks() ) {
+			$posts_query->set( 'author', wct_users_current_user_id()  );
+		}
 
 		// Reset the pagination
 		if ( -1 !== $posts_query->get( 'p' ) ) {
@@ -621,6 +649,17 @@ function wct_is_user_profile_talks() {
 }
 
 /**
+ * Are we viewing archive in user's profile?
+ *
+ * @since 1.2.0
+ *
+ * @return boolean True if viewing archive in the user's profile. False otherwise.
+ */
+function wct_is_user_profile_archive() {
+	return (bool) wct_get_global( 'is_user_archive' );
+}
+
+/**
  * Are we viewing the "home" page of the user's profile?
  *
  * @since 1.0.0
@@ -680,12 +719,18 @@ function wct_reset_post_title( $context = '' ) {
 
 		case 'new-talk' :
 			$post_title = '<a href="' . esc_url( wct_get_root_url() ) . '">' . $post_title . '</a>';
-			$post_title .= '<span class="talk-title-sep"></span>' . __( 'New Talk', 'wordcamp-talks' );
+			$post_title .= '<span class="talk-title-sep"></span>' . esc_html__( 'New Talk', 'wordcamp-talks' );
 			break;
 
 		case 'edit-talk' :
 			$post_title = '<a href="' . esc_url( wct_get_root_url() ) . '">' . $post_title . '</a>';
-			$post_title .= '<span class="talk-title-sep"></span>' . __( 'Edit Talk', 'wordcamp-talks' );
+			$post_title .= '<span class="talk-title-sep"></span>';
+			
+			if ( 'wct_archive' === get_post_status() ) {
+				$post_title .= esc_html__( 'Recycle Talk', 'wordcamp-talks' );
+			} else {
+				$post_title .= esc_html__( 'Edit Talk', 'wordcamp-talks' );
+			}
 			break;
 
 		case 'signup' :
@@ -723,7 +768,11 @@ function wct_title( $title_array = array() ) {
 	if ( wct_is_addnew() ) {
 		$new_title[] = esc_attr__( 'New Talk Proposal', 'wordcamp-talks' );
 	} elseif ( wct_is_edit() ) {
-		$new_title[] = esc_attr__( 'Edit Talk Proposal', 'wordcamp-talks' );
+		if ( 'wct_archive' === get_post_status() ) {
+			$new_title[] = esc_attr__( 'Recycle Talk Proposal', 'wordcamp-talks' );
+		} else {
+			$new_title[] = esc_attr__( 'Edit Talk Proposal', 'wordcamp-talks' );
+		}
 	} elseif ( wct_is_user_profile() ) {
 		$new_title[] = sprintf( esc_html__( '%s&#39;s profile', 'wordcamp-talks' ), wct_users_get_displayed_user_displayname() );
 	} elseif ( wct_is_single_talk() ) {

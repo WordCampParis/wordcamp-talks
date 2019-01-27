@@ -619,6 +619,66 @@ function wct_users_get_user_to_rate_url( $user_id = 0, $user_nicename = '' ) {
 }
 
 /**
+ * Gets URL to the "archive" profile page of a user.
+ *
+ * @since 1.2.0
+ *
+ * @global $wp_rewrite
+ * @param  integer $user_id       The User id.
+ * @param  string  $user_nicename Optional. User nicename.
+ * @return string                 Archive profile url.
+ */
+function wct_users_get_user_archive_url( $user_id = 0, $user_nicename = '' ) {
+	global $wp_rewrite;
+
+	// Bail if no user id provided
+	if ( empty( $user_id ) ) {
+		return false;
+	}
+
+	/**
+	 * Filter here to shortcircuit the function.
+	 *
+	 * @since  1.2.0
+	 *
+	 * @param integer $user_id       the user ID.
+	 * @param string  $user_nicename the username.
+	 */
+	$early_profile_url = apply_filters( 'wct_users_pre_get_user_archive_url', (int) $user_id, $user_nicename );
+	if ( is_string( $early_profile_url ) ) {
+		return $early_profile_url;
+	}
+
+	// Pretty permalinks
+	if ( $wp_rewrite->using_permalinks() ) {
+		$url = $wp_rewrite->root . wct_user_slug() . '/%' . wct_user_rewrite_id() . '%/' . wct_user_archive_slug();
+
+		// Get username if not passed
+		if ( empty( $user_nicename ) ) {
+			$user_nicename = wct_users_get_user_data( 'id', $user_id, 'user_nicename' );
+		}
+
+		$url = str_replace( '%' . wct_user_rewrite_id() . '%', $user_nicename, $url );
+		$url = home_url( user_trailingslashit( $url ) );
+
+	// Unpretty permalinks
+	} else {
+		$url = add_query_arg( array( wct_user_rewrite_id() => $user_id, wct_user_archive_rewrite_id() => '1' ), home_url( '/' ) );
+	}
+
+	/**
+	 * Filter the "archive" profile url once it has built it.
+	 *
+	 * @since  1.2.0
+	 *
+	 * @param string  $url           To rate profile Url.
+	 * @param integer $user_id       The user ID.
+	 * @param string  $user_nicename The username.
+	 */
+	return apply_filters( 'wct_users_get_user_archive_url', $url, $user_id, $user_nicename );
+}
+
+/**
  * Gets URL to the comments profile page of a user.
  *
  * @since 1.0.0
@@ -780,11 +840,17 @@ function wct_users_get_profile_nav_items( $user_id = 0, $username ='', $nofilter
 			'current' => wct_is_user_profile_talks(),
 			'slug'    => sanitize_title( _x( 'talks', 'user talks profile slug', 'wordcamp-talks' ) ),
 		),
+		'archive' => array(
+			'title'   => __( 'Archived', 'wordcamp-talks' ),
+			'url'     => wct_users_get_user_archive_url( $user_id, $username ),
+			'current' => wct_is_user_profile_archive(),
+			'slug'    => sanitize_title( _x( 'archive', 'user archive profile slug', 'wordcamp-talks' ) ),
+		),
 	);
 
 	// Remove the talks nav if user can't publish some!
 	if ( ! user_can( $user_id, 'publish_talks' ) ) {
-		unset( $nav_items['talks'] );
+		unset( $nav_items['talks'], $nav_items['archive'] );
 	}
 
 	if ( user_can( $user_id, 'comment_talks' ) ) {
