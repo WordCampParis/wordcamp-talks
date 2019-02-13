@@ -3,7 +3,7 @@
 Plugin Name: WordCamp Talk Proposals
 Plugin URI: https://github.com/WordCampParis/wordcamp-talks/
 Description: WordCamp Talk Proposals Management Tool
-Version: 1.2.0
+Version: 1.2.1
 Requires at least: 4.6.1
 Tested up to: 5.0
 License: GNU/GPL 2
@@ -71,7 +71,7 @@ final class WordCamp_Talks {
 	 */
 	private function setup_globals() {
 		// Version
-		$this->version = '1.2.0';
+		$this->version = '1.2.1';
 
 		// Domain
 		$this->domain = 'wordcamp-talks';
