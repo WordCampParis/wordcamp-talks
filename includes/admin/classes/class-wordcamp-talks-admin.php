@@ -216,6 +216,19 @@ class WordCamp_Talks_Admin {
 		 * @param array list of menu items
 		 */
 		$menus = apply_filters( 'wct_admin_menus', array(
+			/* Manage Applicants */
+			0  => array(
+				'type'          => 'applicants',
+				'parent_slug'   => $this->parent_slug,
+				'page_title'    => esc_html__( 'Applicants',  'wordcamp-talks' ),
+				'menu_title'    => esc_html__( 'Applicants',  'wordcamp-talks' ),
+				'capability'    => 'wct_talks_admin',
+				'slug'          => 'applicants',
+				'function'      => array( $this, 'applicants_screen' ),
+				'actions'       => array(
+					'load-%page%' => array( $this, 'applicants_screen_load' ),
+				),
+			),
 			/* Settings has a late order to be at last position */
 			10 => array(
 				'type'          => 'settings',
@@ -260,8 +273,10 @@ class WordCamp_Talks_Admin {
 				$screen_id = $menu['alt_screen_id'];
 			}
 
-			foreach ( $menu['actions'] as $key => $action ) {
-				add_action( str_replace( '%page%', $screen_id, $key ), $action );
+			if ( isset( $menu['actions'] ) && is_array( $menu['actions'] ) ) {
+				foreach ( $menu['actions'] as $key => $action ) {
+					add_action( str_replace( '%page%', $screen_id, $key ), $action );
+				}
 			}
 		}
 
@@ -2313,6 +2328,69 @@ class WordCamp_Talks_Admin {
 		}
 
 		return $query_args;
+	}
+
+	/**
+	 * Load the Applicants List table.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $class    The name of the class to use.
+	 * @param string $required The parent class.
+	 * @return WP_List_Table|null The List table.
+	 */
+	public static function get_list_table_class( $class = '', $required = '' ) {
+		if ( empty( $class ) ) {
+			return;
+		}
+
+		if ( ! empty( $required ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-' . $required . '-list-table.php';
+		}
+
+		return new $class();
+	}
+
+	/**
+	 * Prepares the list of Talk Proposals applicants.
+	 *
+	 * @since 1.3.0
+	 */
+	public function applicants_screen_load() {
+		$this->applicants_list_table = self::get_list_table_class( 'WordCamp_Talks_Admin_Applicants', 'users' );
+		$pagenum                     = $this->applicants_list_table->get_pagenum();
+
+		$this->applicants_list_table->prepare_items();
+		$total_pages = $this->applicants_list_table->get_pagination_arg( 'total_pages' );
+		if ( $pagenum > $total_pages && $total_pages > 0 ) {
+			wp_redirect( add_query_arg( 'paged', $total_pages ) );
+			exit;
+		}
+	}
+
+	/**
+	 * Displays the list of Talk Proposals applicants.
+	 *
+	 * @since 1.3.0
+	 */
+	public function applicants_screen() {
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline">
+				<?php esc_html_e( 'Applicants', 'wordcamp-talks' ); ?>
+			</h1>
+			<hr class="wp-header-end">
+
+			<?php $this->applicants_list_table->views(); ?>
+
+			<form method="get">
+				<?php $this->applicants_list_table->search_box( __( 'Search Applicants', 'wordcamp-talks' ), 'applicant' ); ?>
+				<?php $this->applicants_list_table->display(); ?>
+			</form>
+
+			<br class="clear" />
+		</div>
+		<?php
 	}
 }
 

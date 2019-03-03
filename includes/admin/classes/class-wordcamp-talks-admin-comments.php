@@ -144,7 +144,7 @@ class WordCamp_Talks_Admin_Comments {
 
 		$comments_menu_title = $this->bubbled_menu( $comments_menu_title . ' ', $this->talk_comment_count->moderated );
 
-		$menus[0] = array(
+		$menus[1] = array(
 			'type'          => 'comments',
 			'parent_slug'   => wct()->admin->parent_slug,
 			'page_title'    => esc_html__( 'Talk Proposal Comments', 'wordcamp-talks' ),
