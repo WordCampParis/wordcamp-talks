@@ -182,6 +182,9 @@ class WordCamp_Talks_Admin {
 		add_filter( "bulk_actions-edit-{$this->post_type}",        array( $this, 'talks_bulk_actions' ),        10, 1 );
 		add_filter( "handle_bulk_actions-edit-{$this->post_type}", array( $this, 'talks_handle_bulk_actions' ), 10, 4 );
 
+		// Allow the admin to change the Talk proposal author
+		add_filter( 'wp_dropdown_users_args', array( $this, 'dropdown_users_args' ), 10, 1 );
+
 		/** Specific case: ratings ****************************************************/
 
 		// Only sort by rates & display people who voted if ratings is not disabled.
@@ -2291,6 +2294,25 @@ class WordCamp_Talks_Admin {
 			</table>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Allow Talk author reassignment.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $query_args The query arguments for get_users().
+	 * @return array             The query arguments for get_users().
+	 */
+	public function dropdown_users_args( $query_args = array() ) {
+		$current_screen = get_current_screen();
+
+		if ( ! empty( $current_screen->post_type ) && $current_screen->post_type === $this->post_type ) {
+			$query_args['who'] = '';
+			$query_args['role__not_in'] = array( 'rater', 'blind_rater', 'juror' );
+		}
+
+		return $query_args;
 	}
 }
 
