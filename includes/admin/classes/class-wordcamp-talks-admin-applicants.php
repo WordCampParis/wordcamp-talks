@@ -103,7 +103,7 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 		}
 
 		// Query the user IDs for this page
-		$applicants_search = new WP_User_Query( $args );
+		$applicants_search = new WP_User_Query( apply_filters( 'wct_applicants_list_table_args', $args ) );
 
 		$this->items = $applicants_search->get_results();
 
@@ -151,6 +151,17 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 			$views[ $status ] = sprintf( '<a href="%1$s"%2$s>%3$s</a>', add_query_arg( 'status', $status, $url ), $current_link_attributes, esc_html( $view ) );
 		}
 
+		$csv_args = array( 'csv' => 1 );
+
+		if ( $this->status ) {
+			$csv_args['status'] = $this->status;
+		}
+
+		$views['csv_applicants'] = sprintf( '<a href="%s" id="wordcamp-talks-csv" title="%s"><span class="dashicons dashicons-media-spreadsheet"></span></a>',
+			esc_url( wp_nonce_url( add_query_arg( $csv_args, $url ), 'wct_is_csv' ) ),
+			esc_attr__( 'Download all Applicants in a csv spreadsheet', 'wordcamp-talks' )
+		);
+
 		return $views;
 	}
 
@@ -173,13 +184,13 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return array(
+		return apply_filters( 'wct_applicants_list_table_columns', array(
 			'cb'         => '<input type="checkbox" />',
 			'username'   => __( 'Username',       'wordcamp-talks' ),
 			'name'       => __( 'Name',           'wordcamp-talks' ),
 			'email'      => __( 'Email',          'wordcamp-talks' ),
 			'talks'      => __( 'Talk proposals', 'wordcamp-talks' ),
-		);
+		) );
 	}
 
 	/**

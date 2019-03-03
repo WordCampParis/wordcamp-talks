@@ -1186,15 +1186,24 @@ class WordCamp_Talks_Admin {
 	 *
 	 * @return String text/csv
 	 */
-	public function csv_export() {
-		// Strip edit inline extra html
-		remove_filter( 'map_meta_cap', 'wct_map_meta_caps', 10, 4 );
-		add_filter( 'user_has_cap', array( $this, 'filter_has_cap' ), 10, 1 );
+	public function csv_export( $type = '' ) {
+		if ( 'applicants' === $type )  {
+			// Get all applicants.
+			add_filter( 'wct_applicants_list_table_args', array( $this, 'get_all_applicants' ), 10, 1 );
+			add_filter( 'wct_applicants_list_table_columns', array( $this, 'get_applicants_export_columns' ), 10, 1 );
 
-		// Get all talks
-		add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
+			$html_list_table = $this->applicants_list_table;
+		} else {
+			// Strip edit inline extra html
+			remove_filter( 'map_meta_cap', 'wct_map_meta_caps', 10, 4 );
+			add_filter( 'user_has_cap', array( $this, 'filter_has_cap' ), 10, 1 );
 
-		$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+			// Get all talks
+			add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
+
+			$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+		}
+
 		$html_list_table->prepare_items();
 		ob_start();
 		?>
@@ -1246,13 +1255,17 @@ class WordCamp_Talks_Admin {
 			}
 		}
 
-		$file = implode( "\n", $csv );
+		$file     = implode( "\n", $csv );
+		$prefix = esc_attr_x( 'talks', 'prefix of the downloaded csv', 'wordcamp-talks' );
+		if ( 'applicants' === $type ) {
+			$prefix = esc_attr_x( 'applicants', 'prefix of the downloaded csv', 'wordcamp-talks' );
+		}
 
 		status_header( 200 );
 		header( 'Cache-Control: cache, must-revalidate' );
 		header( 'Pragma: public' );
 		header( 'Content-Description: File Transfer' );
-		header( 'Content-Disposition: attachment; filename=' . sprintf( '%s-%s.csv', esc_attr_x( 'talks', 'prefix of the downloaded csv', 'wordcamp-talks' ), date('Y-m-d-his' ) ) );
+		header( 'Content-Disposition: attachment; filename=' . sprintf( '%s-%s.csv', $prefix, date('Y-m-d-his' ) ) );
 		header( 'Content-Type: text/csv;' );
 		print( $file );
 		exit();
@@ -2304,6 +2317,13 @@ class WordCamp_Talks_Admin {
 		return new $class();
 	}
 
+	/**
+	 * Display a form to send bulk emails to applicants.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $applicant_ids The list of user ids to contact.
+	 */
 	public function applicants_edit_bulk_email( $applicant_ids = array() ) {
 		$applicants_count = count( $applicant_ids );
 		wp_enqueue_script(
@@ -2358,6 +2378,34 @@ class WordCamp_Talks_Admin {
 	}
 
 	/**
+	 * Remove the checkbox when exporting applicants.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $columns The list of columns of the Applicants list table.
+	 * @return array          The list of columns of the Applicants list table.
+	 */
+	public function get_applicants_export_columns( $columns = array() ) {
+		unset( $columns['cb'] );
+		return $columns;
+	}
+
+	/**
+	 * Get all applicants when exporting them to a csv spreadsheet.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $args The arguments of the users query used in the Applicants list table.
+	 * @return array       The arguments of the users query used in the Applicants list table.
+	 */
+	public function get_all_applicants( $args = array() ) {
+		unset( $args['offset'] );
+		$args['number'] = '-1';
+
+		return $args;
+	}
+
+	/**
 	 * Prepares the list of Talk Proposals applicants.
 	 *
 	 * @since 1.3.0
@@ -2384,6 +2432,15 @@ class WordCamp_Talks_Admin {
 
 			wp_redirect( $redirect );
 			exit;
+
+		// Export Applicants
+		} elseif ( ! empty( $_GET['csv'] ) ) {
+
+			check_admin_referer( 'wct_is_csv' );
+
+			$this->downloading_csv = true;
+
+			$this->csv_export( 'applicants' );
 		}
 
 		$this->applicants_list_table->prepare_items();
