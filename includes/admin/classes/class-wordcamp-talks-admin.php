@@ -182,6 +182,9 @@ class WordCamp_Talks_Admin {
 		add_filter( "bulk_actions-edit-{$this->post_type}",        array( $this, 'talks_bulk_actions' ),        10, 1 );
 		add_filter( "handle_bulk_actions-edit-{$this->post_type}", array( $this, 'talks_handle_bulk_actions' ), 10, 4 );
 
+		// Handle Applicants bulk email action.
+		add_filter( 'handle_bulk_actions-talks_page_applicants', array( $this, 'talks_handle_applicants_bulk_email' ), 10, 4 );
+
 		// Allow the admin to change the Talk proposal author
 		add_filter( 'wp_dropdown_users_args', array( $this, 'dropdown_users_args' ), 10, 1 );
 
@@ -298,15 +301,6 @@ class WordCamp_Talks_Admin {
 					array( $this, 'export_selected' )
 				);
 			}
-
-			$title = __( 'WordCamp Talks', 'wordcamp-talks' );
-			add_management_page(
-				$title,
-				$title,
-				'manage_options',
-				'wct-tools',
-				array( $this, 'tools' )
-			);
 		}
 	}
 
@@ -2271,47 +2265,6 @@ class WordCamp_Talks_Admin {
 	}
 
 	/**
-	 * Display the available tools. For now, it only informs whether speakers used
-	 * a gravatar email, set their display name and bios.
-	 *
-	 * @since 1.1.7
-	 */
-	public function tools() {
-		$speakers = get_users( array( 'role' => 'subscriber' ) );
-		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'WordCamp Talks tools', 'wordcamp-talks' ); ?></h1>
-			<hr class="wp-header-end">
-			<table class="wp-list-table widefat fixed striped" style="margin-top: 8px;">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'User Login', 'wordcamp-talks' ); ?></th>
-						<th><?php esc_html_e( 'Has a display name', 'wordcamp-talks' ); ?></th>
-						<th><?php esc_html_e( 'Has a description', 'wordcamp-talks' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-
-				<?php foreach ( $speakers as $speaker ) : ?>
-
-					<tr>
-						<td class="username column-username">
-							<?php echo get_avatar( $speaker->ID, 32 ); ?>
-							<?php printf( '<a href="mailto:%1$s">%2$s</a>', sanitize_email( $speaker->user_email ), esc_html( $speaker->user_login ) ); ?>
-						</td>
-						<td><?php echo ( $speaker->user_login !== $speaker->display_name ); ?></td>
-						<td><?php echo ( !! $speaker->description ); ?></td>
-					</tr>
-
-				<?php endforeach ; ?>
-
-				</tbody>
-			</table>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Allow Talk author reassignment.
 	 *
 	 * @since 1.3.0
@@ -2351,6 +2304,59 @@ class WordCamp_Talks_Admin {
 		return new $class();
 	}
 
+	public function applicants_edit_bulk_email( $applicant_ids = array() ) {
+		$applicants_count = count( $applicant_ids );
+		wp_enqueue_script(
+			'wordcamp-talks-bulk-mailer',
+			wct_get_js_script( 'bulk-mailer' ),
+			array( 'json2', 'wp-backbone' ),
+			wct_get_version(),
+			true
+		);
+
+		$users = get_users( array( 'include' => $applicant_ids, 'number' => '-1' ) );
+		wp_localize_script( 'wordcamp-talks-bulk-mailer', 'wctJSvars', array( 'users' => wp_list_pluck( $users, 'data', 'ID' ) ) );
+
+		// Load the Admin header.
+		require_once( ABSPATH . 'wp-admin/admin-header.php' );
+
+		$status = '';
+		if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+			$referer_query_part = wp_parse_url( $_REQUEST['_wp_http_referer'], PHP_URL_QUERY );
+			$referer_query_vars = wp_parse_args( $referer_query_part, array( 'status' => '' ) );
+
+			$status = $referer_query_vars['status'];
+		}
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline">
+				<?php esc_html_e( 'Contact Applicants', 'wordcamp-talks' ); ?>
+			</h1>
+
+			<hr class="wp-header-end">
+
+			<p class="description">
+				<?php
+				if ( 'not_selected' === $status ) {
+					echo esc_html( _n( 'You are about to contact an applicant about their rejected talk proposal.', 'You are about to contact applicants about their rejected talk proposals.', $applicants_count, 'wordcamp-talks' ) );
+				} elseif ( 'selected' === $status ) {
+					echo esc_html( _n( 'You are about to contact an applicant about their selected talk proposal.', 'You are about to contact applicants about their selected talk proposals.', $applicants_count, 'wordcamp-talks' ) );
+				}
+				echo '&nbsp;' . esc_html( _n( 'The following applicant will receive your email:', 'The following applicants will receive your email:', $applicants_count, 'wordcamp-talks' ) );
+				?>
+			</p>
+
+			<div id="wordcamp-talks-mailer"></div>
+			<script type="text/html" id="tmpl-wct-applicants-list">
+				{{data.display_name}} ({{data.user_email}})
+			</script>
+		</div>
+
+		<?php
+		include ABSPATH . 'wp-admin/admin-footer.php' ;
+		exit();
+	}
+
 	/**
 	 * Prepares the list of Talk Proposals applicants.
 	 *
@@ -2359,6 +2365,26 @@ class WordCamp_Talks_Admin {
 	public function applicants_screen_load() {
 		$this->applicants_list_table = self::get_list_table_class( 'WordCamp_Talks_Admin_Applicants', 'users' );
 		$pagenum                     = $this->applicants_list_table->get_pagenum();
+		$doaction                    = $this->applicants_list_table->current_action();
+		$redirect                    = add_query_arg(
+			array(
+				'post_type' => wct_get_post_type(),
+				'page'      => 'applicants',
+			),
+			admin_url( 'edit.php' )
+		);
+
+		if ( $doaction && 'send_bulk_emails' === $doaction ) {
+			check_admin_referer( 'bulk-users' );
+
+			if ( ! empty( $_REQUEST['applicant_ids'] ) ) {
+				$applicant_ids = wp_parse_id_list( $_REQUEST['applicant_ids'] );
+				return $this->applicants_edit_bulk_email( $applicant_ids );
+			}
+
+			wp_redirect( $redirect );
+			exit;
+		}
 
 		$this->applicants_list_table->prepare_items();
 		$total_pages = $this->applicants_list_table->get_pagination_arg( 'total_pages' );
@@ -2384,6 +2410,8 @@ class WordCamp_Talks_Admin {
 			<?php $this->applicants_list_table->views(); ?>
 
 			<form method="get">
+				<input type="hidden" name="post_type" class="post_type_page" value="<?php echo esc_attr( $this->post_type ); ?>" />
+				<input type="hidden" name="page" value="applicants" />
 				<?php $this->applicants_list_table->search_box( __( 'Search Applicants', 'wordcamp-talks' ), 'applicant' ); ?>
 				<?php $this->applicants_list_table->display(); ?>
 			</form>
