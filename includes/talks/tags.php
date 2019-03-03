@@ -1246,6 +1246,9 @@ function wct_talks_the_talk_footer() {
  * @return string the bottom nav output
  */
 function wct_talks_bottom_navigation() {
+	// We need to make sure the archived proposals are not fetched.
+	add_filter( 'get_previous_post_where', 'wct_talks_adjactent_talk_where', 10, 5 );
+	add_filter( 'get_next_post_where', 'wct_talks_adjactent_talk_where', 10, 5 );
 	?>
 	<ul class="talk-nav-single">
 		<li class="talk-nav-previous"><?php previous_post_link( '%link', '<span class="meta-nav">' . _x( '&larr;', 'Previous post link', 'wordcamp-talks' ) . '</span> %title' ); ?></li>
@@ -1253,6 +1256,9 @@ function wct_talks_bottom_navigation() {
 		<li class="talk-nav-next"><?php next_post_link( '%link', '%title <span class="meta-nav">' . _x( '&rarr;', 'Next post link', 'wordcamp-talks' ) . '</span>' ); ?></li>
 	</ul>
 	<?php
+	// Stop filtering
+	remove_filter( 'get_previous_post_where', 'wct_talks_adjactent_talk_where', 10, 5 );
+	remove_filter( 'get_next_post_where', 'wct_talks_adjactent_talk_where', 10, 5 );
 }
 
 /** Talk Form *****************************************************************/

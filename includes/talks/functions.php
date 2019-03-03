@@ -1185,3 +1185,22 @@ function wct_send_slack_notification( $saved_id = 0, $talk = null ) {
 	) );
 }
 add_action( 'wct_talks_after_insert_talk', 'wct_send_slack_notification', 10, 2 );
+
+/**
+ * Make sure the archived proposals are not fetched in post navigations.
+ *
+ * @since 1.2.1
+ *
+ * @param string  $where          The `WHERE` clause in the SQL.
+ * @param bool    $in_same_term   Whether post should be in a same taxonomy term.
+ * @param array   $excluded_terms Array of excluded term IDs.
+ * @param string  $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
+ * @param WP_Post $post           WP_Post object.
+ */
+function wct_talks_adjactent_talk_where( $where = '', $in_same_term = false, $excluded_terms = array(), $taxonomy = '', WP_Post $post ) {
+	if ( wct_get_post_type() !== get_post_type( $post ) ) {
+		return $where;
+	}
+
+	return str_replace( ' OR p.post_status = \'wct_archive\'', '', $where );
+}
