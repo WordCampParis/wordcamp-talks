@@ -159,6 +159,9 @@ class WordCamp_Talks_Admin {
 		// Add a specific metabox to manage WordCamp Talk Proposal menus.
 		add_action( 'load-nav-menus.php', array( $this, 'menu_accordion' ), 10, 1 );
 
+		// Listen to Applicant emails Ajax requests
+		add_action( 'wp_ajax_wct_email_applicant', array( $this, 'email_applicant' ), 10 );
+
 		/** Filters *******************************************************************/
 
 		// Updated message
@@ -2315,6 +2318,51 @@ class WordCamp_Talks_Admin {
 		}
 
 		return new $class();
+	}
+
+	/**
+	 * Send an email using Ajax.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string JSON reply.
+	 */
+	public function email_applicant() {
+		$message = wp_parse_args( $_POST, array(
+			'user_email' => '',
+			'reply_to'   => '',
+			'subject'    => '',
+			'content'    => '',
+		) );
+
+		if ( ! $message['user_email'] || ! $message['content'] ) {
+			wp_send_json_error( new WP_Error( 'missing_params', __( 'No user email or no content provided.', 'wordcamp-talks' ) ) );
+		}
+
+		$user_email = $message['user_email'];
+		$headers    = array();
+		$content    = wp_kses( $message['content'], array() );
+
+		if ( ! $message['subject'] ) {
+			$subject = sprintf( __( 'Message from %s', 'wordcamp-talks' ), wp_specialchars_decode( get_option( 'blogname' ) ) );
+		} else {
+			$subject = wp_kses( $message['subject'], array() );
+		}
+
+		if ( $message['reply_to'] ) {
+			$reply_to = is_email( $message['reply_to'] );
+
+			if ( $reply_to ) {
+				$sender_name = wp_get_current_user()->display_name;
+				$headers[]   = sprintf( 'Reply-To: %1$s <%2$s>', $sender_name, $reply_to );
+			}
+		}
+
+		if ( wp_mail( $user_email, $subject, $content, $headers ) ) {
+			wp_send_json_success();
+		} else {
+			wp_send_json_error( new WP_Error( 'email_failed', sprintf( __( 'The %s email address could not be sent.', 'wordcamp-talks' ), $user_email ) ) );
+		}
 	}
 
 	/**
