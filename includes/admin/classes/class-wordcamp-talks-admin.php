@@ -2349,6 +2349,10 @@ class WordCamp_Talks_Admin {
 			$subject = wp_kses( $message['subject'], array() );
 		}
 
+		// Unslash subject and content.
+		$subject = wp_unslash( $subject );
+		$content = wp_unslash( $content );
+
 		if ( $message['reply_to'] ) {
 			$reply_to = is_email( $message['reply_to'] );
 
