@@ -79,25 +79,39 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 		if ( 'missing_bio' === $this->status ) {
 			$args['meta_key'] = 'description';
 			$args['meta_value'] = false;
-		} elseif ( '' !== $this->status ) {
-			$selected_talks = get_posts( array(
-				'numberposts' => '-1',
-				'post_type'   => wct_get_post_type(),
-				'post_status' => 'wct_selected',
+		}
+
+		// Get all talks to get all applicants.
+		$talks = get_posts( array(
+			'numberposts' => '-1',
+			'post_type'   => wct_get_post_type(),
+			'post_status' => array_keys( wct_get_statuses() ),
+		) );
+
+		// Make applicants unique.
+		$args['include'] = array_unique( wp_list_pluck( $talks, 'post_author' ) );
+
+		if ( '' !== $this->status ) {
+			// Get the selected speakers
+			$selected_speakers = array_unique( wp_filter_object_list(
+				$talks,
+				array( 'post_status' => 'wct_selected' ),
+				'and',
+				'post_author'
 			) );
 
-			$selected_users = array_unique( wp_list_pluck( $selected_talks, 'post_author' ) );
-
+			// Display all except speakers.
 			if ( 'not_selected' === $this->status ) {
-				$args['exclude'] = $selected_users;
-			} else {
+				$args['include'] = array_diff( $args['include'], $selected_speakers );
+
+			} elseif ( 'selected' === $this->status ) {
 				// Use a dummy role to display no applicants
-				if ( ! $selected_users ) {
+				if ( ! $selected_speakers ) {
 					$args['role'] = 'wct_dummy';
 
-				// Only display applicants with at least 1 selected talk.
+				// Only display speakers.
 				} else {
-					$args['include'] = $selected_users;
+					$args['include'] = $selected_speakers;
 				}
 			}
 		}
