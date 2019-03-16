@@ -1124,6 +1124,38 @@ function wct_users_talks_count_by_user( $max = 10, $user_id = null ) {
 }
 
 /**
+ * Filter to set the WordCamp Talk status query for `count_many_users_posts`.
+ *
+ * @since 1.3.0
+ *
+ * @param  string $query The query used by `count_many_users_posts`.
+ * @return string        The query `count_many_users_posts` should use for Talk proposals.
+ */
+function _wct_query_many_users_talks( $query = '' ) {
+	return str_replace( 'post_status = \'publish\'', 'post_status IN( "' . join( array_keys( wct_get_statuses() ), '","' ) . '")', $query );
+}
+
+/**
+ * Count Talk proposals for many applicants.
+ *
+ * @since 1.3.0
+ *
+ * @param  array $users The list of user ids to get the talk proposals count for.
+ * @return array        The list of Talk proposals count keyed by the corresponding user IDs.
+ */
+function _wct_count_many_users_talks( $users = array() ) {
+	$users = wp_parse_id_list( $users );
+
+	add_filter( 'query', '_wct_query_many_users_talks', 10, 1 );
+
+	$count = count_many_users_posts( $users, wct_get_post_type(), true );
+
+	remove_filter( 'query', '_wct_query_many_users_talks', 10, 1 );
+
+	return $count;
+}
+
+/**
  * Get the default role for a user (used in multisite configs).
  *
  * @since 1.0.0

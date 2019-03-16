@@ -159,6 +159,12 @@ class WordCamp_Talks_Admin {
 		// Add a specific metabox to manage WordCamp Talk Proposal menus.
 		add_action( 'load-nav-menus.php', array( $this, 'menu_accordion' ), 10, 1 );
 
+		// Listen to Applicant emails Ajax requests
+		add_action( 'wp_ajax_wct_email_applicant', array( $this, 'email_applicant' ), 10 );
+
+		// Enqueue admin styles
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), 10 );
+
 		/** Filters *******************************************************************/
 
 		// Updated message
@@ -181,6 +187,12 @@ class WordCamp_Talks_Admin {
 
 		add_filter( "bulk_actions-edit-{$this->post_type}",        array( $this, 'talks_bulk_actions' ),        10, 1 );
 		add_filter( "handle_bulk_actions-edit-{$this->post_type}", array( $this, 'talks_handle_bulk_actions' ), 10, 4 );
+
+		// Handle Applicants bulk email action.
+		add_filter( 'handle_bulk_actions-talks_page_applicants', array( $this, 'talks_handle_applicants_bulk_email' ), 10, 4 );
+
+		// Allow the admin to change the Talk proposal author
+		add_filter( 'wp_dropdown_users_args', array( $this, 'dropdown_users_args' ), 10, 1 );
 
 		/** Specific case: ratings ****************************************************/
 
@@ -213,6 +225,19 @@ class WordCamp_Talks_Admin {
 		 * @param array list of menu items
 		 */
 		$menus = apply_filters( 'wct_admin_menus', array(
+			/* Manage Applicants */
+			0  => array(
+				'type'          => 'applicants',
+				'parent_slug'   => $this->parent_slug,
+				'page_title'    => esc_html__( 'Applicants',  'wordcamp-talks' ),
+				'menu_title'    => esc_html__( 'Applicants',  'wordcamp-talks' ),
+				'capability'    => 'wct_talks_admin',
+				'slug'          => 'applicants',
+				'function'      => array( $this, 'applicants_screen' ),
+				'actions'       => array(
+					'load-%page%' => array( $this, 'applicants_screen_load' ),
+				),
+			),
 			/* Settings has a late order to be at last position */
 			10 => array(
 				'type'          => 'settings',
@@ -257,8 +282,10 @@ class WordCamp_Talks_Admin {
 				$screen_id = $menu['alt_screen_id'];
 			}
 
-			foreach ( $menu['actions'] as $key => $action ) {
-				add_action( str_replace( '%page%', $screen_id, $key ), $action );
+			if ( isset( $menu['actions'] ) && is_array( $menu['actions'] ) ) {
+				foreach ( $menu['actions'] as $key => $action ) {
+					add_action( str_replace( '%page%', $screen_id, $key ), $action );
+				}
 			}
 		}
 
@@ -280,15 +307,6 @@ class WordCamp_Talks_Admin {
 					array( $this, 'export_selected' )
 				);
 			}
-
-			$title = __( 'WordCamp Talks', 'wordcamp-talks' );
-			add_management_page(
-				$title,
-				$title,
-				'manage_options',
-				'wct-tools',
-				array( $this, 'tools' )
-			);
 		}
 	}
 
@@ -1174,15 +1192,24 @@ class WordCamp_Talks_Admin {
 	 *
 	 * @return String text/csv
 	 */
-	public function csv_export() {
-		// Strip edit inline extra html
-		remove_filter( 'map_meta_cap', 'wct_map_meta_caps', 10, 4 );
-		add_filter( 'user_has_cap', array( $this, 'filter_has_cap' ), 10, 1 );
+	public function csv_export( $type = '' ) {
+		if ( 'applicants' === $type )  {
+			// Get all applicants.
+			add_filter( 'wct_applicants_list_table_args', array( $this, 'get_all_applicants' ), 10, 1 );
+			add_filter( 'wct_applicants_list_table_columns', array( $this, 'get_applicants_export_columns' ), 10, 1 );
 
-		// Get all talks
-		add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
+			$html_list_table = $this->applicants_list_table;
+		} else {
+			// Strip edit inline extra html
+			remove_filter( 'map_meta_cap', 'wct_map_meta_caps', 10, 4 );
+			add_filter( 'user_has_cap', array( $this, 'filter_has_cap' ), 10, 1 );
 
-		$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+			// Get all talks
+			add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
+
+			$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+		}
+
 		$html_list_table->prepare_items();
 		ob_start();
 		?>
@@ -1234,13 +1261,17 @@ class WordCamp_Talks_Admin {
 			}
 		}
 
-		$file = implode( "\n", $csv );
+		$file     = implode( "\n", $csv );
+		$prefix = esc_attr_x( 'talks', 'prefix of the downloaded csv', 'wordcamp-talks' );
+		if ( 'applicants' === $type ) {
+			$prefix = esc_attr_x( 'applicants', 'prefix of the downloaded csv', 'wordcamp-talks' );
+		}
 
 		status_header( 200 );
 		header( 'Cache-Control: cache, must-revalidate' );
 		header( 'Pragma: public' );
 		header( 'Content-Description: File Transfer' );
-		header( 'Content-Disposition: attachment; filename=' . sprintf( '%s-%s.csv', esc_attr_x( 'talks', 'prefix of the downloaded csv', 'wordcamp-talks' ), date('Y-m-d-his' ) ) );
+		header( 'Content-Disposition: attachment; filename=' . sprintf( '%s-%s.csv', $prefix, date('Y-m-d-his' ) ) );
 		header( 'Content-Type: text/csv;' );
 		print( $file );
 		exit();
@@ -1729,289 +1760,26 @@ class WordCamp_Talks_Admin {
  				}
  			}
  		}
+	}
 
- 		$post_type = sanitize_html_class( $this->post_type );
+	/**
+	 * Load styles for the Talk proposals administration areas.
+	 *
+	 * @since 1.3.0
+	 */
+	public function load_styles() {
+		$post_type     = sanitize_html_class( $this->post_type );
+		$common_styles = file_get_contents( $this->includes_dir . '/assets/style.css' );
 
- 		// Add some css
-		?>
+		// Common styles.
+		wp_add_inline_style( 'common', str_replace( '{{{post-type}}}', $post_type, $common_styles ) );
 
-		<style type="text/css" media="screen">
-		/*<![CDATA[*/
+		// Load rating styles if needed.
+		if ( wct_is_admin() && ! wct_is_rating_disabled() ) {
+			$rating_styles = file_get_contents( $this->includes_dir . '/assets/rating.css' );
 
-			/* Bubble style for Main Post type menu */
-			#adminmenu .wp-menu-open.menu-icon-<?php echo $post_type;?> .awaiting-mod {
-				background-color: #2ea2cc;
-				color: #fff;
-			}
-
-			#wordcamp-talks-csv span.dashicons-media-spreadsheet {
-				vertical-align: text-bottom;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_pending th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_selected th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_shortlist th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
-				border-left-width: 4px;
-				border-left-style: solid;
-				border-left-color: #ffba00;
-			}
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_selected th {
-				border-left-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_shortlist th {
-				border-left-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th {
-				border-left-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
-				border-left-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .fixed th.column-rates {
-				width: 10%;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
-				border-bottom-color: #ffba00;
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a {
-				border-bottom-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a {
-				border-bottom-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a {
-				border-bottom-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a {
-				border-bottom-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current {
-				background-color: #ffba00;
-				color: #FFF;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current {
-				background-color: #88aa22;
-				color: #FFF;
-				border-bottom-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current {
-				background-color: #3388aa;
-				color: #FFF;
-				border-bottom-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current {
-				background-color: #dd3333;
-				color: #FFF;
-				border-bottom-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
-				background-color: #7F38EC;
-				color: #FFF;
-				border-bottom-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current .count {
-				color: #FFF;
-			}
-
-			body.post-type-<?php echo $post_type;?> .fixed th.column-cat_talks,
-			body.post-type-<?php echo $post_type;?> .fixed th.column-tag_talks {
-				width: 15%;
-			}
-
-			body.post-type-<?php echo $post_type;?> #poststuff #wct_workflow_metabox .inside {
-				margin: 0;
-				padding: 0;
-			}
-
-			body.post-type-<?php echo $post_type;?> .talk-major-action {
-				padding: 6px 10px 8px;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct_workflow_metabox .submitdelete {
-				color: #a00;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct_workflow_metabox .submitdelete:hover {
-				color: #dc3232;
-				border: none;
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dt {
-				font-weight: bold;
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dt:before {
-				font: 400 20px/1 dashicons;
-				speak: none;
-				display: inline-block;
-				margin-left: -1px;
-				padding-right: 3px;
-				vertical-align: top;
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-				content: "\f145";
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dd {
-				margin-left: 22px;
-			}
-
-			body.post-type-<?php echo $post_type;?> .talk-major-action select {
-				width: 65%;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct-session-action a {
-				display: inline-block;
-				margin-bottom: 1.5em;
-				width: 100%;
-				text-align: center;
-			}
-
-			.welcome-speaker .welcome-panel-last {
-				width: 64%;
-			}
-
-			.welcome-speaker span.dashicons {
-				vertical-align: text-bottom;
-			}
-
-			<?php if ( wct_is_admin() && ! wct_is_rating_disabled() ) : ?>
-				/* Rating stars in screen options and in talks WP List Table */
-				.metabox-prefs .talk-rating-bubble:before,
-				th .talk-rating-bubble:before {
-					font: normal 20px/.5 'dashicons';
-					speak: none;
-					display: inline-block;
-					padding: 0;
-					top: 4px;
-					left: -4px;
-					position: relative;
-					vertical-align: top;
-					-webkit-font-smoothing: antialiased;
-					-moz-osx-font-smoothing: grayscale;
-					text-decoration: none !important;
-					color: #444;
-				}
-
-				th .talk-rating-bubble:before,
-				.metabox-prefs .talk-rating-bubble:before {
-					content: '\f155';
-				}
-
-				.metabox-prefs .talk-rating-bubble:before {
-					vertical-align: baseline;
-				}
-
-				/* Rates management */
-				#wct_ratings_box ul.admin-talk-rates {
-					width: 100%;
-					list-style: none;
-					clear: both;
-					margin: 0;
-					padding: 0;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li {
-					list-style: none;
-					overflow: hidden;
-					position: relative;
-					padding:15px 0;
-					border-bottom:dotted 1px #ccc;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li:last-child {
-					border:none;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
-					float:left;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
-					width:20%;
-					font-weight: bold;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users {
-					margin-left: 20%;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users span.user-rated {
-					display:inline-block;
-					margin:5px;
-					padding:5px;
-					-webkit-box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
-					box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate {
-					text-decoration: none;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate div {
-					vertical-align: baseline;
-				}
-
-				body.post-type-<?php echo $post_type;?> .inline-edit-status,
-				body.post-type-<?php echo $post_type;?> .inline-edit-col-left .inline-edit-group,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-col,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-tags,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-center {
-					display: none;
-				}
-
-			<?php endif; ?>
-
-		/*]]>*/
-		</style>
-		<?php
+			wp_add_inline_style( 'common', str_replace( '{{{post-type}}}', $post_type, $rating_styles ) );
+		}
 	}
 
 	/**
@@ -2253,42 +2021,278 @@ class WordCamp_Talks_Admin {
 	}
 
 	/**
-	 * Display the available tools. For now, it only informs whether speakers used
-	 * a gravatar email, set their display name and bios.
+	 * Allow Talk author reassignment.
 	 *
-	 * @since 1.1.7
+	 * @since 1.3.0
+	 *
+	 * @param  array $query_args The query arguments for get_users().
+	 * @return array             The query arguments for get_users().
 	 */
-	public function tools() {
-		$speakers = get_users( array( 'role' => 'subscriber' ) );
+	public function dropdown_users_args( $query_args = array() ) {
+		$current_screen = get_current_screen();
+
+		if ( ! empty( $current_screen->post_type ) && $current_screen->post_type === $this->post_type ) {
+			$query_args['who'] = '';
+			$query_args['role__not_in'] = array( 'rater', 'blind_rater', 'juror' );
+		}
+
+		return $query_args;
+	}
+
+	/**
+	 * Load the Applicants List table.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $class    The name of the class to use.
+	 * @param string $required The parent class.
+	 * @return WP_List_Table|null The List table.
+	 */
+	public static function get_list_table_class( $class = '', $required = '' ) {
+		if ( empty( $class ) ) {
+			return;
+		}
+
+		if ( ! empty( $required ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-' . $required . '-list-table.php';
+		}
+
+		return new $class();
+	}
+
+	/**
+	 * Send an email using Ajax.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @return string JSON reply.
+	 */
+	public function email_applicant() {
+		$message = wp_parse_args( $_POST, array(
+			'user_email' => '',
+			'reply_to'   => '',
+			'subject'    => '',
+			'content'    => '',
+		) );
+
+		if ( ! $message['user_email'] || ! $message['content'] ) {
+			wp_send_json_error( new WP_Error( 'missing_params', __( 'No user email or no content provided.', 'wordcamp-talks' ) ) );
+		}
+
+		$user_email = $message['user_email'];
+		$headers    = array();
+		$content    = wp_kses( $message['content'], array() );
+
+		if ( ! $message['subject'] ) {
+			$subject = sprintf( __( 'Message from %s', 'wordcamp-talks' ), wp_specialchars_decode( get_option( 'blogname' ) ) );
+		} else {
+			$subject = wp_kses( $message['subject'], array() );
+		}
+
+		// Unslash subject and content.
+		$subject = wp_unslash( $subject );
+		$content = wp_unslash( $content );
+
+		if ( $message['reply_to'] ) {
+			$reply_to = is_email( $message['reply_to'] );
+
+			if ( $reply_to ) {
+				$sender_name = wp_get_current_user()->display_name;
+				$headers[]   = sprintf( 'Reply-To: %1$s <%2$s>', $sender_name, $reply_to );
+			}
+		}
+
+		if ( wp_mail( $user_email, $subject, $content, $headers ) ) {
+			wp_send_json_success( array(
+				'type'        => 'success',
+				'log_message' => sprintf( __( 'The %s email address has been successfully sent.', 'wordcamp-talks' ), $user_email ),
+				'user_email'  => $user_email,
+			) );
+		} else {
+			wp_send_json_error( array(
+				'type'        => 'fail',
+				'log_message' =>  sprintf( __( 'The %s email address could not be sent.', 'wordcamp-talks' ), $user_email ),
+				'user_email'  => $user_email,
+			) );
+		}
+	}
+
+	/**
+	 * Display a form to send bulk emails to applicants.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $applicant_ids The list of user ids to contact.
+	 */
+	public function applicants_edit_bulk_email( $applicant_ids = array() ) {
+		$applicants_count = count( $applicant_ids );
+		wp_enqueue_script(
+			'wordcamp-talks-bulk-mailer',
+			wct_get_js_script( 'bulk-mailer' ),
+			array( 'json2', 'wp-backbone' ),
+			wct_get_version(),
+			true
+		);
+
+		$users = get_users( array( 'include' => $applicant_ids, 'number' => '-1' ) );
+		wp_localize_script( 'wordcamp-talks-bulk-mailer', 'wctJSvars', array(
+			'users'   => wp_list_pluck( $users, 'data', 'ID' ),
+			'strings' => array(
+				'endedBulk'    => __( 'Bulk emailing just ended, you can safely exit this page.', 'wordcamp-talks' ),
+				'startedBulk'  => __( 'Bulk emailing just started. Please wait.', 'wordcamp-talks' ),
+				'emailSubject' => __( 'Subject of your email', 'wordcamp-talks' ),
+				'emailReplyTo' => __( 'The email address to receive replies to.', 'wordcamp-talks' ),
+				'emailMessage' => __( 'Message', 'wordcamp-talks' ),
+				'emailSubmit'  => __( 'Send', 'wordcamp-talks' ),
+			),
+		) );
+
+		// Load the Admin header.
+		require_once( ABSPATH . 'wp-admin/admin-header.php' );
+
+		$status = '';
+		if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+			$referer_query_part = wp_parse_url( $_REQUEST['_wp_http_referer'], PHP_URL_QUERY );
+			$referer_query_vars = wp_parse_args( $referer_query_part, array( 'status' => '' ) );
+
+			$status = $referer_query_vars['status'];
+		}
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'WordCamp Talks tools', 'wordcamp-talks' ); ?></h1>
+			<h1 class="wp-heading-inline">
+				<?php esc_html_e( 'Contact Applicants', 'wordcamp-talks' ); ?>
+			</h1>
+
 			<hr class="wp-header-end">
-			<table class="wp-list-table widefat fixed striped" style="margin-top: 8px;">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'User Login', 'wordcamp-talks' ); ?></th>
-						<th><?php esc_html_e( 'Has a display name', 'wordcamp-talks' ); ?></th>
-						<th><?php esc_html_e( 'Has a description', 'wordcamp-talks' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
 
-				<?php foreach ( $speakers as $speaker ) : ?>
+			<p class="description">
+				<?php
+				if ( 'not_selected' === $status ) {
+					echo esc_html( _n( 'You are about to contact an applicant about their rejected talk proposal.', 'You are about to contact applicants about their rejected talk proposals.', $applicants_count, 'wordcamp-talks' ) );
+				} elseif ( 'selected' === $status ) {
+					echo esc_html( _n( 'You are about to contact an applicant about their selected talk proposal.', 'You are about to contact applicants about their selected talk proposals.', $applicants_count, 'wordcamp-talks' ) );
+				}
+				echo '&nbsp;' . esc_html( _n( 'The following applicant will receive your email:', 'The following applicants will receive your email:', $applicants_count, 'wordcamp-talks' ) );
+				?>
+			</p>
 
-					<tr>
-						<td class="username column-username">
-							<?php echo get_avatar( $speaker->ID, 32 ); ?>
-							<?php printf( '<a href="mailto:%1$s">%2$s</a>', sanitize_email( $speaker->user_email ), esc_html( $speaker->user_login ) ); ?>
-						</td>
-						<td><?php echo ( $speaker->user_login !== $speaker->display_name ); ?></td>
-						<td><?php echo ( !! $speaker->description ); ?></td>
-					</tr>
+			<div id="wordcamp-talks-mailer-wrapper">
+				<div id="wordcamp-talks-mailer"></div>
+				<div id="wordcamp-talks-mailer-logs">
+					<h2><?php esc_html_e( 'Email logs', 'wordcamp-talks' ); ?></h2>
+					<div id="wordcamp-talks-mailer-log-entries"></div>
+				</div>
+			</div>
+			<script type="text/html" id="tmpl-wct-applicants-list">
+				{{data.display_name}} ({{data.user_email}})
+			</script>
+			<script type="text/html" id="tmpl-wct-log-entries">
+				<span class="{{data.type}}">{{data.log_message}}</span>
+			</script>
+		</div>
 
-				<?php endforeach ; ?>
+		<?php
+		include ABSPATH . 'wp-admin/admin-footer.php' ;
+		exit();
+	}
 
-				</tbody>
-			</table>
+	/**
+	 * Remove the checkbox when exporting applicants.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $columns The list of columns of the Applicants list table.
+	 * @return array          The list of columns of the Applicants list table.
+	 */
+	public function get_applicants_export_columns( $columns = array() ) {
+		unset( $columns['cb'] );
+		return $columns;
+	}
+
+	/**
+	 * Get all applicants when exporting them to a csv spreadsheet.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param  array $args The arguments of the users query used in the Applicants list table.
+	 * @return array       The arguments of the users query used in the Applicants list table.
+	 */
+	public function get_all_applicants( $args = array() ) {
+		unset( $args['offset'] );
+		$args['number'] = '-1';
+
+		return $args;
+	}
+
+	/**
+	 * Prepares the list of Talk Proposals applicants.
+	 *
+	 * @since 1.3.0
+	 */
+	public function applicants_screen_load() {
+		$this->applicants_list_table = self::get_list_table_class( 'WordCamp_Talks_Admin_Applicants', 'users' );
+		$pagenum                     = $this->applicants_list_table->get_pagenum();
+		$doaction                    = $this->applicants_list_table->current_action();
+		$redirect                    = add_query_arg(
+			array(
+				'post_type' => wct_get_post_type(),
+				'page'      => 'applicants',
+			),
+			admin_url( 'edit.php' )
+		);
+
+		if ( $doaction && 'send_bulk_emails' === $doaction ) {
+			check_admin_referer( 'bulk-users' );
+
+			if ( ! empty( $_REQUEST['applicant_ids'] ) ) {
+				$applicant_ids = wp_parse_id_list( $_REQUEST['applicant_ids'] );
+				return $this->applicants_edit_bulk_email( $applicant_ids );
+			}
+
+			wp_redirect( $redirect );
+			exit;
+
+		// Export Applicants
+		} elseif ( ! empty( $_GET['csv'] ) ) {
+
+			check_admin_referer( 'wct_is_csv' );
+
+			$this->downloading_csv = true;
+
+			$this->csv_export( 'applicants' );
+		}
+
+		$this->applicants_list_table->prepare_items();
+		$total_pages = $this->applicants_list_table->get_pagination_arg( 'total_pages' );
+		if ( $pagenum > $total_pages && $total_pages > 0 ) {
+			wp_redirect( add_query_arg( 'paged', $total_pages ) );
+			exit;
+		}
+	}
+
+	/**
+	 * Displays the list of Talk Proposals applicants.
+	 *
+	 * @since 1.3.0
+	 */
+	public function applicants_screen() {
+		?>
+		<div class="wrap">
+			<h1 class="wp-heading-inline">
+				<?php esc_html_e( 'Applicants', 'wordcamp-talks' ); ?>
+			</h1>
+			<hr class="wp-header-end">
+
+			<?php $this->applicants_list_table->views(); ?>
+
+			<form method="get">
+				<input type="hidden" name="post_type" class="post_type_page" value="<?php echo esc_attr( $this->post_type ); ?>" />
+				<input type="hidden" name="page" value="applicants" />
+				<?php $this->applicants_list_table->search_box( __( 'Search Applicants', 'wordcamp-talks' ), 'applicant' ); ?>
+				<?php $this->applicants_list_table->display(); ?>
+			</form>
+
+			<br class="clear" />
 		</div>
 		<?php
 	}

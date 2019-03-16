@@ -1,0 +1,83 @@
+/* Rating stars in screen options and in talks WP List Table */
+.metabox-prefs .talk-rating-bubble:before,
+th .talk-rating-bubble:before {
+	font: normal 20px/.5 'dashicons';
+	speak: none;
+	display: inline-block;
+	padding: 0;
+	top: 4px;
+	left: -4px;
+	position: relative;
+	vertical-align: top;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none !important;
+	color: #444;
+}
+
+th .talk-rating-bubble:before,
+.metabox-prefs .talk-rating-bubble:before {
+	content: '\f155';
+}
+
+.metabox-prefs .talk-rating-bubble:before {
+	vertical-align: baseline;
+}
+
+/* Rates management */
+#wct_ratings_box ul.admin-talk-rates {
+	width: 100%;
+	list-style: none;
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+
+#wct_ratings_box ul.admin-talk-rates li {
+	list-style: none;
+	overflow: hidden;
+	position: relative;
+	padding:15px 0;
+	border-bottom:dotted 1px #ccc;
+}
+
+#wct_ratings_box ul.admin-talk-rates li:last-child {
+	border:none;
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
+	float:left;
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
+	width:20%;
+	font-weight: bold;
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users {
+	margin-left: 20%;
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users span.user-rated {
+	display:inline-block;
+	margin:5px;
+	padding:5px;
+	-webkit-box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
+	box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate {
+	text-decoration: none;
+}
+
+#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate div {
+	vertical-align: baseline;
+}
+
+body.post-type-{{{post-type}}} .inline-edit-status,
+body.post-type-{{{post-type}}} .inline-edit-col-left .inline-edit-group,
+body.post-type-{{{post-type}}} tr.bulk-edit-{{{post-type}}} .inline-edit-col-right .inline-edit-col,
+body.post-type-{{{post-type}}} tr.bulk-edit-{{{post-type}}} .inline-edit-col-right .inline-edit-tags,
+body.post-type-{{{post-type}}} tr.bulk-edit-{{{post-type}}} .inline-edit-col-center {
+	display: none;
+}
