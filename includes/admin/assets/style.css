@@ -181,3 +181,44 @@ body.post-type-{{{post-type}}} #wct-session-action a {
 .welcome-speaker span.dashicons {
 	vertical-align: text-bottom;
 }
+
+/* Bulk Mailer */
+#wordcamp-talks-mailer-wrapper {
+	display: -ms-grid;
+	display: grid;
+	-ms-grid-columns: 50% auto;
+	grid-template-columns: 50% auto;
+	grid-template-areas: "left-col right-col";
+}
+
+#wordcamp-talks-mailer {
+	-ms-grid-row: 1;
+	-ms-grid-column: 1;
+	grid-area: left-col;
+}
+
+#wordcamp-talks-mailer-logs {
+	-ms-grid-row: 1;
+	-ms-grid-column: 2;
+	grid-area: right-col;
+	margin: 1em;
+	padding: 0 1em;
+	background: #fff;
+	border: 1px solid #e5e5e5;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+#wordcamp-talks-mailer > ul li {
+	display: inline-block;
+	margin: 0 1em 0 0;
+	background: #72777c;
+	padding: 0.5em 1em;
+	color: #fff;
+	font-weight: 600;
+}
+
+#wordcamp-talks-mailer > label {
+	font-weight: 600;
+	display: block;
+	margin: 1em 0 0.5em;
+}

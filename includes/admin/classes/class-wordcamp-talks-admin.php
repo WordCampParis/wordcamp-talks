@@ -2158,7 +2158,13 @@ class WordCamp_Talks_Admin {
 				?>
 			</p>
 
-			<div id="wordcamp-talks-mailer"></div>
+			<div id="wordcamp-talks-mailer-wrapper">
+				<div id="wordcamp-talks-mailer"></div>
+				<div id="wordcamp-talks-mailer-logs">
+					<h2><?php esc_html_e( 'Email logs', 'wordcamp-talks' ); ?></h2>
+					<div id="wordcamp-talks-mailer-log-entries"></div>
+				</div>
+			</div>
 			<script type="text/html" id="tmpl-wct-applicants-list">
 				{{data.display_name}} ({{data.user_email}})
 			</script>
