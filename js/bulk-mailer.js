@@ -1,4 +1,4 @@
-/* global wp, wctJSvars, _, Backbone */
+/* global wctJSvars, _, Backbone */
 ( function( wp, $ ) {
 
     if ( 'undefined' === typeof wctJSvars || ! wctJSvars.users ) {
@@ -29,7 +29,7 @@
     } );
 
     wctBulkMailer.Collections.LogEmails = Backbone.Collection.extend( {
-        model: wctBulkMailer.Models.LogEmail,
+        model: wctBulkMailer.Models.LogEmail
     } );
 
     wctBulkMailer.Models.Applicant = Backbone.Model.extend( {
@@ -165,7 +165,7 @@
     wctBulkMailer.Views.submitMessage = wctBulkMailer.View.extend( {
         tagName: 'button',
         attributes: {
-            class: 'button button-primary',
+            class: 'button button-primary', // jshint ignore:line
             disabled: true
         },
 
@@ -215,8 +215,8 @@
             this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.ApplicantList( { collection: Applicants } ) );
             this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
-                    for: 'email-subject',
-                    class: 'label'
+                    for: 'email-subject', // jshint ignore:line
+                    class: 'label' // jshint ignore:line
                 },
                 content: wctJSvars.strings.emailSubject
             } ) );
@@ -225,15 +225,15 @@
                 attributes: {
                     id: 'email-subject',
                     type: 'text',
-                    class: 'widefat code',
+                    class: 'widefat code', // jshint ignore:line
                     name: 'subject'
                 },
                 email: email
             } ) );
             this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
-                    for: 'email-body-reply-to',
-                    class: 'label'
+                    for: 'email-body-reply-to', // jshint ignore:line
+                    class: 'label' // jshint ignore:line
                 },
                 content: wctJSvars.strings.emailReplyTo
             } ) );
@@ -242,15 +242,15 @@
                 attributes: {
                     id: 'email-body-reply-to',
                     type: 'text',
-                    class: 'widefat code',
+                    class: 'widefat code', // jshint ignore:line
                     name: 'reply_to'
                 },
                 email: email
             } ) );
             this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
-                    for: 'email-body-message',
-                    class: 'label'
+                    for: 'email-body-message', // jshint ignore:line
+                    class: 'label' // jshint ignore:line
                 },
                 content: wctJSvars.strings.emailMessage
             } ) );
@@ -260,7 +260,7 @@
                     id: 'email-body-message',
                     cols: 50,
                     rows: 10,
-                    class: 'widefat code',
+                    class: 'widefat code', // jshint ignore:line
                     name: 'content'
                 },
                 email: email
