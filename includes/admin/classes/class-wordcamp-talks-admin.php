@@ -162,6 +162,9 @@ class WordCamp_Talks_Admin {
 		// Listen to Applicant emails Ajax requests
 		add_action( 'wp_ajax_wct_email_applicant', array( $this, 'email_applicant' ), 10 );
 
+		// Enqueue admin styles
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), 10 );
+
 		/** Filters *******************************************************************/
 
 		// Updated message
@@ -1757,289 +1760,26 @@ class WordCamp_Talks_Admin {
  				}
  			}
  		}
+	}
 
- 		$post_type = sanitize_html_class( $this->post_type );
+	/**
+	 * Load styles for the Talk proposals administration areas.
+	 *
+	 * @since 1.3.0
+	 */
+	public function load_styles() {
+		$post_type     = sanitize_html_class( $this->post_type );
+		$common_styles = file_get_contents( $this->includes_dir . '/assets/style.css' );
 
- 		// Add some css
-		?>
+		// Common styles.
+		wp_add_inline_style( 'common', str_replace( '{{{post-type}}}', $post_type, $common_styles ) );
 
-		<style type="text/css" media="screen">
-		/*<![CDATA[*/
+		// Load rating styles if needed.
+		if ( wct_is_admin() && ! wct_is_rating_disabled() ) {
+			$rating_styles = file_get_contents( $this->includes_dir . '/assets/rating.css' );
 
-			/* Bubble style for Main Post type menu */
-			#adminmenu .wp-menu-open.menu-icon-<?php echo $post_type;?> .awaiting-mod {
-				background-color: #2ea2cc;
-				color: #fff;
-			}
-
-			#wordcamp-talks-csv span.dashicons-media-spreadsheet {
-				vertical-align: text-bottom;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_pending th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_selected th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_shortlist th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th,
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
-				border-left-width: 4px;
-				border-left-style: solid;
-				border-left-color: #ffba00;
-			}
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_selected th {
-				border-left-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_shortlist th {
-				border-left-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_rejected th {
-				border-left-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .wp-list-table tr.status-wct_backup th {
-				border-left-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .fixed th.column-rates {
-				width: 10%;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
-				border-bottom-color: #ffba00;
-				border-bottom-width: 1px;
-				border-bottom-style: solid;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a {
-				border-bottom-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a {
-				border-bottom-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a {
-				border-bottom-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a {
-				border-bottom-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current {
-				background-color: #ffba00;
-				color: #FFF;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current {
-				background-color: #88aa22;
-				color: #FFF;
-				border-bottom-color: #88aa22;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current {
-				background-color: #3388aa;
-				color: #FFF;
-				border-bottom-color: #3388aa;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current {
-				background-color: #dd3333;
-				color: #FFF;
-				border-bottom-color: #dd3333;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current {
-				background-color: #7F38EC;
-				color: #FFF;
-				border-bottom-color: #7F38EC;
-			}
-
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_pending a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_selected a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_shortlist a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_rejected a.current .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a:hover .count,
-			body.post-type-<?php echo $post_type;?> .subsubsub li.wct_backup a.current .count {
-				color: #FFF;
-			}
-
-			body.post-type-<?php echo $post_type;?> .fixed th.column-cat_talks,
-			body.post-type-<?php echo $post_type;?> .fixed th.column-tag_talks {
-				width: 15%;
-			}
-
-			body.post-type-<?php echo $post_type;?> #poststuff #wct_workflow_metabox .inside {
-				margin: 0;
-				padding: 0;
-			}
-
-			body.post-type-<?php echo $post_type;?> .talk-major-action {
-				padding: 6px 10px 8px;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct_workflow_metabox .submitdelete {
-				color: #a00;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct_workflow_metabox .submitdelete:hover {
-				color: #dc3232;
-				border: none;
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dt {
-				font-weight: bold;
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dt:before {
-				font: 400 20px/1 dashicons;
-				speak: none;
-				display: inline-block;
-				margin-left: -1px;
-				padding-right: 3px;
-				vertical-align: top;
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-				content: "\f145";
-			}
-
-			body.post-type-<?php echo $post_type;?> #talk-timestamps dd {
-				margin-left: 22px;
-			}
-
-			body.post-type-<?php echo $post_type;?> .talk-major-action select {
-				width: 65%;
-			}
-
-			body.post-type-<?php echo $post_type;?> #wct-session-action a {
-				display: inline-block;
-				margin-bottom: 1.5em;
-				width: 100%;
-				text-align: center;
-			}
-
-			.welcome-speaker .welcome-panel-last {
-				width: 64%;
-			}
-
-			.welcome-speaker span.dashicons {
-				vertical-align: text-bottom;
-			}
-
-			<?php if ( wct_is_admin() && ! wct_is_rating_disabled() ) : ?>
-				/* Rating stars in screen options and in talks WP List Table */
-				.metabox-prefs .talk-rating-bubble:before,
-				th .talk-rating-bubble:before {
-					font: normal 20px/.5 'dashicons';
-					speak: none;
-					display: inline-block;
-					padding: 0;
-					top: 4px;
-					left: -4px;
-					position: relative;
-					vertical-align: top;
-					-webkit-font-smoothing: antialiased;
-					-moz-osx-font-smoothing: grayscale;
-					text-decoration: none !important;
-					color: #444;
-				}
-
-				th .talk-rating-bubble:before,
-				.metabox-prefs .talk-rating-bubble:before {
-					content: '\f155';
-				}
-
-				.metabox-prefs .talk-rating-bubble:before {
-					vertical-align: baseline;
-				}
-
-				/* Rates management */
-				#wct_ratings_box ul.admin-talk-rates {
-					width: 100%;
-					list-style: none;
-					clear: both;
-					margin: 0;
-					padding: 0;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li {
-					list-style: none;
-					overflow: hidden;
-					position: relative;
-					padding:15px 0;
-					border-bottom:dotted 1px #ccc;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li:last-child {
-					border:none;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
-					float:left;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-star {
-					width:20%;
-					font-weight: bold;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users {
-					margin-left: 20%;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users span.user-rated {
-					display:inline-block;
-					margin:5px;
-					padding:5px;
-					-webkit-box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
-					box-shadow: 0 1px 1px 1px rgba(0,0,0,0.1);
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate {
-					text-decoration: none;
-				}
-
-				#wct_ratings_box ul.admin-talk-rates li div.admin-talk-rates-users a.del-rate div {
-					vertical-align: baseline;
-				}
-
-				body.post-type-<?php echo $post_type;?> .inline-edit-status,
-				body.post-type-<?php echo $post_type;?> .inline-edit-col-left .inline-edit-group,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-col,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-right .inline-edit-tags,
-				body.post-type-<?php echo $post_type;?> tr.bulk-edit-<?php echo $post_type;?> .inline-edit-col-center {
-					display: none;
-				}
-
-			<?php endif; ?>
-
-		/*]]>*/
-		</style>
-		<?php
+			wp_add_inline_style( 'common', str_replace( '{{{post-type}}}', $post_type, $rating_styles ) );
+		}
 	}
 
 	/**

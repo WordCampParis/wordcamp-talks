@@ -1,0 +1,183 @@
+/* Bubble style for Main Post type menu */
+#adminmenu .wp-menu-open.menu-icon-{{{post-type}}} .awaiting-mod {
+	background-color: #2ea2cc;
+	color: #fff;
+}
+
+#wordcamp-talks-csv span.dashicons-media-spreadsheet {
+	vertical-align: text-bottom;
+}
+
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_pending th,
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_selected th,
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_shortlist th,
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_rejected th,
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_backup th {
+	border-left-width: 4px;
+	border-left-style: solid;
+	border-left-color: #ffba00;
+}
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_selected th {
+	border-left-color: #88aa22;
+}
+
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_shortlist th {
+	border-left-color: #3388aa;
+}
+
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_rejected th {
+	border-left-color: #dd3333;
+}
+
+body.post-type-{{{post-type}}} .wp-list-table tr.status-wct_backup th {
+	border-left-color: #7F38EC;
+}
+
+body.post-type-{{{post-type}}} .fixed th.column-rates {
+	width: 10%;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a,
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a.current,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a.current,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a.current,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a.current,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a.current {
+	border-bottom-color: #ffba00;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a {
+	border-bottom-color: #88aa22;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a {
+	border-bottom-color: #3388aa;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a {
+	border-bottom-color: #dd3333;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a {
+	border-bottom-color: #7F38EC;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a.current {
+	background-color: #ffba00;
+	color: #FFF;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a.current {
+	background-color: #88aa22;
+	color: #FFF;
+	border-bottom-color: #88aa22;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a.current {
+	background-color: #3388aa;
+	color: #FFF;
+	border-bottom-color: #3388aa;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a.current {
+	background-color: #dd3333;
+	color: #FFF;
+	border-bottom-color: #dd3333;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a:hover,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a.current {
+	background-color: #7F38EC;
+	color: #FFF;
+	border-bottom-color: #7F38EC;
+}
+
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a:hover .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_pending a.current .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a:hover .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_selected a.current .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a:hover .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_shortlist a.current .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a:hover .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_rejected a.current .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a:hover .count,
+body.post-type-{{{post-type}}} .subsubsub li.wct_backup a.current .count {
+	color: #FFF;
+}
+
+body.post-type-{{{post-type}}} .fixed th.column-cat_talks,
+body.post-type-{{{post-type}}} .fixed th.column-tag_talks {
+	width: 15%;
+}
+
+body.post-type-{{{post-type}}} #poststuff #wct_workflow_metabox .inside {
+	margin: 0;
+	padding: 0;
+}
+
+body.post-type-{{{post-type}}} .talk-major-action {
+	padding: 6px 10px 8px;
+}
+
+body.post-type-{{{post-type}}} #wct_workflow_metabox .submitdelete {
+	color: #a00;
+}
+
+body.post-type-{{{post-type}}} #wct_workflow_metabox .submitdelete:hover {
+	color: #dc3232;
+	border: none;
+}
+
+body.post-type-{{{post-type}}} #talk-timestamps dt {
+	font-weight: bold;
+}
+
+body.post-type-{{{post-type}}} #talk-timestamps dt:before {
+	font: 400 20px/1 dashicons;
+	speak: none;
+	display: inline-block;
+	margin-left: -1px;
+	padding-right: 3px;
+	vertical-align: top;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	content: "\f145";
+}
+
+body.post-type-{{{post-type}}} #talk-timestamps dd {
+	margin-left: 22px;
+}
+
+body.post-type-{{{post-type}}} .talk-major-action select {
+	width: 65%;
+}
+
+body.post-type-{{{post-type}}} #wct-session-action a {
+	display: inline-block;
+	margin-bottom: 1.5em;
+	width: 100%;
+	text-align: center;
+}
+
+.welcome-speaker .welcome-panel-last {
+	width: 64%;
+}
+
+.welcome-speaker span.dashicons {
+	vertical-align: text-bottom;
+}
