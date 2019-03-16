@@ -20,6 +20,18 @@
         } )
     };
 
+    wctBulkMailer.Models.LogEmail = Backbone.Model.extend( {
+        defaults: {
+            type: '',
+            log_message: '',
+            user_email: ''
+        }
+    } );
+
+    wctBulkMailer.Collections.LogEmails = Backbone.Collection.extend( {
+        model: wctBulkMailer.Models.LogEmail,
+    } );
+
     wctBulkMailer.Models.Applicant = Backbone.Model.extend( {
         defaults: {
             id: 0,
@@ -31,20 +43,38 @@
     wctBulkMailer.Collections.Applicants = Backbone.Collection.extend( {
         model: wctBulkMailer.Models.Applicant,
 
-        send: function( email ) {
+        send: function( email, logs ) {
             var data = email.attributes || {}, first = _.first( this.models ), self = this;
 
             if ( ! first.get( 'id' ) ) {
                 return false;
             }
 
-            wp.ajax.post( 'wct_email_applicant', _.extend( data, first.attributes ) ).done( function() {
+            wp.ajax.post( 'wct_email_applicant', _.extend( data, first.attributes ) ).always( function( response ) {
                 self.remove( first );
-            } ).fail( function( response ) {
-                var error = _.first( response );
+                logs.add( response );
 
-                console.warn( error.message );
+                if ( ! self.length ) {
+                    logs.add( { type: 'info', log_message: wctJSvars.strings.endedBulk } );
+                }
             } );
+        }
+    } );
+
+    wctBulkMailer.Views.feedbackEntry = wctBulkMailer.View.extend( {
+        tagName: 'li',
+        template : wp.template( 'wct-log-entries' )
+    } );
+
+    wctBulkMailer.Views.feedBacks = wctBulkMailer.View.extend( {
+        tagName: 'ul',
+
+        initialize: function() {
+            this.collection.on( 'add', this.addLogEntry, this );
+        },
+
+        addLogEntry: function( entry ) {
+            this.views.add( new wctBulkMailer.Views.feedbackEntry( { model: entry } ) );
         }
     } );
 
@@ -164,31 +194,33 @@
 
         sendEmails: function() {
             this.options.email.set( 'sending', true );
-            this.collection.send( this.options.email );
+            this.options.logs.add( { type: 'info', log_message: wctJSvars.strings.startedBulk } );
+            this.collection.send( this.options.email, this.options.logs );
         },
 
         nextEmail: function() {
             if ( ! this.collection.length ) {
                 this.options.email.clear();
             } else {
-                this.collection.send( this.options.email );
+                this.collection.send( this.options.email, this.options.logs );
             }
         }
     } );
 
     wctBulkMailer.Views.Main = wctBulkMailer.View.extend( {
         initialize: function() {
-            var Applicants = new wctBulkMailer.Collections.Applicants(), email = new Backbone.Model();
+            var Applicants = new wctBulkMailer.Collections.Applicants(), email = new Backbone.Model(),
+                Logs = new wctBulkMailer.Collections.LogEmails();
 
-            this.views.add( new wctBulkMailer.Views.ApplicantList( { collection: Applicants } ) );
-            this.views.add( new wctBulkMailer.Views.label( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.ApplicantList( { collection: Applicants } ) );
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
                     for: 'email-subject',
                     class: 'label'
                 },
-                content: 'Subject of your email'
+                content: wctJSvars.strings.emailSubject
             } ) );
-            this.views.add( new wctBulkMailer.Views.Input( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.Input( {
                 collection: Applicants,
                 attributes: {
                     id: 'email-subject',
@@ -198,14 +230,14 @@
                 },
                 email: email
             } ) );
-            this.views.add( new wctBulkMailer.Views.label( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
                     for: 'email-body-reply-to',
                     class: 'label'
                 },
-                content: 'The email address to receive replies to.'
+                content: wctJSvars.strings.emailReplyTo
             } ) );
-            this.views.add( new wctBulkMailer.Views.Input( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.Input( {
                 collection: Applicants,
                 attributes: {
                     id: 'email-body-reply-to',
@@ -215,14 +247,14 @@
                 },
                 email: email
             } ) );
-            this.views.add( new wctBulkMailer.Views.label( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.label( {
                 attributes: {
                     for: 'email-body-message',
                     class: 'label'
                 },
-                content: 'Message'
+                content: wctJSvars.strings.emailMessage
             } ) );
-            this.views.add( new wctBulkMailer.Views.bodyMessage( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.bodyMessage( {
                 collection: Applicants,
                 attributes: {
                     id: 'email-body-message',
@@ -233,13 +265,18 @@
                 },
                 email: email
             } ) );
-            this.views.add( new wctBulkMailer.Views.submitMessage( {
+            this.views.add( '#wordcamp-talks-mailer', new wctBulkMailer.Views.submitMessage( {
                 collection: Applicants,
-                content: 'Send',
-                email: email
+                content: wctJSvars.strings.emailSubmit,
+                email: email,
+                logs: Logs
+            } ) );
+
+            this.views.add( '#wordcamp-talks-mailer-log-entries', new wctBulkMailer.Views.feedBacks( {
+                collection: Logs
             } ) );
         }
     } );
 
-    new wctBulkMailer.Views.Main( { el:'#wordcamp-talks-mailer' } ).render();
+    new wctBulkMailer.Views.Main( { el:'#wordcamp-talks-mailer-wrapper' } ).render();
 } )( window.wp || {}, jQuery );

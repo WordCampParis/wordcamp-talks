@@ -222,3 +222,19 @@ body.post-type-{{{post-type}}} #wct-session-action a {
 	display: block;
 	margin: 1em 0 0.5em;
 }
+
+#wordcamp-talks-mailer-logs li {
+	font-weight: 600;
+}
+
+#wordcamp-talks-mailer-logs span.success {
+    color: #789e05;
+}
+
+#wordcamp-talks-mailer-logs span.fail {
+    color: #dc3232;
+}
+
+#wordcamp-talks-mailer-logs span.info {
+    color: #00a0d2;
+}

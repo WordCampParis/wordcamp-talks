@@ -2103,9 +2103,17 @@ class WordCamp_Talks_Admin {
 		}
 
 		if ( wp_mail( $user_email, $subject, $content, $headers ) ) {
-			wp_send_json_success();
+			wp_send_json_success( array(
+				'type'        => 'success',
+				'log_message' => sprintf( __( 'The %s email address has been successfully sent.', 'wordcamp-talks' ), $user_email ),
+				'user_email'  => $user_email,
+			) );
 		} else {
-			wp_send_json_error( new WP_Error( 'email_failed', sprintf( __( 'The %s email address could not be sent.', 'wordcamp-talks' ), $user_email ) ) );
+			wp_send_json_error( array(
+				'type'        => 'fail',
+				'log_message' =>  sprintf( __( 'The %s email address could not be sent.', 'wordcamp-talks' ), $user_email ),
+				'user_email'  => $user_email,
+			) );
 		}
 	}
 
@@ -2127,7 +2135,17 @@ class WordCamp_Talks_Admin {
 		);
 
 		$users = get_users( array( 'include' => $applicant_ids, 'number' => '-1' ) );
-		wp_localize_script( 'wordcamp-talks-bulk-mailer', 'wctJSvars', array( 'users' => wp_list_pluck( $users, 'data', 'ID' ) ) );
+		wp_localize_script( 'wordcamp-talks-bulk-mailer', 'wctJSvars', array(
+			'users'   => wp_list_pluck( $users, 'data', 'ID' ),
+			'strings' => array(
+				'endedBulk'    => __( 'Bulk emailing just ended, you can safely exit this page.', 'wordcamp-talks' ),
+				'startedBulk'  => __( 'Bulk emailing just started. Please wait.', 'wordcamp-talks' ),
+				'emailSubject' => __( 'Subject of your email', 'wordcamp-talks' ),
+				'emailReplyTo' => __( 'The email address to receive replies to.', 'wordcamp-talks' ),
+				'emailMessage' => __( 'Message', 'wordcamp-talks' ),
+				'emailSubmit'  => __( 'Send', 'wordcamp-talks' ),
+			),
+		) );
 
 		// Load the Admin header.
 		require_once( ABSPATH . 'wp-admin/admin-header.php' );
@@ -2167,6 +2185,9 @@ class WordCamp_Talks_Admin {
 			</div>
 			<script type="text/html" id="tmpl-wct-applicants-list">
 				{{data.display_name}} ({{data.user_email}})
+			</script>
+			<script type="text/html" id="tmpl-wct-log-entries">
+				<span class="{{data.type}}">{{data.log_message}}</span>
 			</script>
 		</div>
 
