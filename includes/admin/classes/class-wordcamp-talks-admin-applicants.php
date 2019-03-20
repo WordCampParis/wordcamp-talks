@@ -299,6 +299,17 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	}
 
 	/**
+	 * Neutralizes row actions links for this list table.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param object $item        The item being acted upon.
+	 * @param string $column_name Current column name.
+	 * @param string $primary     Primary column name.
+	 */
+	protected function handle_row_actions( $item, $column_name, $primary ) {}
+
+	/**
 	 * Markup for the checkbox used to select applicants for bulk actions.
 	 *
 	 * @since 1.3.0
@@ -323,24 +334,29 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	 * @param object|null $applicants Applicant object.
 	 */
 	public function column_username( $applicants = null ) {
-		$avatar	= get_avatar( $applicants->user_email, 32 );
+		if ( wct()->admin->downloading_csv ) {
+			echo esc_html( $applicants->user_login );
 
-		$applicant = $applicants->user_login;
+		} else {
+			$avatar	= get_avatar( $applicants->user_email, 32 );
 
-		// Check if the user for this row is editable
-		if ( current_user_can( 'list_users' ) ) {
-			// Set up the user editing link
-			$applicant = sprintf( '<a href="%1$s">%2$s</a>',
-				esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $applicants->ID ) ) ),
-				$applicants->user_login
-			);
+			$applicant = $applicants->user_login;
+
+			// Check if the user for this row is editable
+			if ( current_user_can( 'list_users' ) ) {
+				// Set up the user editing link
+				$applicant = sprintf( '<a href="%1$s">%2$s</a>',
+					esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $applicants->ID ) ) ),
+					$applicants->user_login
+				);
+			}
+
+			echo $avatar . sprintf( '<strong>%s</strong><br/>', $applicant );
+
+			$actions = array();
+
+			echo $this->row_actions( $actions );
 		}
-
-		echo $avatar . sprintf( '<strong>%s</strong><br/>', $applicant );
-
-		$actions = array();
-
-		echo $this->row_actions( $actions );
 	}
 
 	/**
@@ -376,6 +392,11 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
         $talks_count = 0;
 
         if ( isset( $applicants->number_of_talks ) && $applicants->number_of_talks ) {
+			if ( wct()->admin->downloading_csv ) {
+				echo number_format_i18n( $applicants->number_of_talks );
+				return;
+			}
+
             $applicant_talks_url = add_query_arg(
                 array(
                     'post_type' => wct_get_post_type(),

@@ -1210,7 +1210,7 @@ class WordCamp_Talks_Admin {
 			// Get all talks
 			add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
 
-			$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+			$html_list_table = self::get_list_table_class( 'WordCamp_Talks_Admin_Export_Talks', 'posts' );
 		}
 
 		$html_list_table->prepare_items();
