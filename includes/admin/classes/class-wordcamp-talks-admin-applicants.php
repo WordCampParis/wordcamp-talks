@@ -29,11 +29,21 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	public $status;
 
 	/**
+	 * Used to store selected applicants.
+	 *
+	 * @since 1.3.0
+	 * @var array
+	 */
+	private $selected_items = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.3.0
 	 */
 	public function __construct() {
+		add_screen_option( 'per_page', array( 'label' => _x( 'Applicants', 'Applicant items per page (screen options)', 'wordcamp-talks' ) ) );
+
 		// Define singular and plural labels, as well as whether we support AJAX.
 		parent::__construct( array(
 			'ajax'     => false,
@@ -120,6 +130,10 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 		$applicants_search = new WP_User_Query( apply_filters( 'wct_applicants_list_table_args', $args ) );
 
 		$this->items = $applicants_search->get_results();
+
+		if ( isset( $selected_speakers ) ) {
+			$this->selected_items = array_map( 'intval', $selected_speakers );
+		}
 
 		$this->set_pagination_args(
 			array(
@@ -247,11 +261,15 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	 * @since 1.3.0
 	 */
 	public function display_rows() {
-        $style       = '';
-        $talks_count = _wct_count_many_users_talks( array_keys( $this->items ) );
+		$talks_count = _wct_count_many_users_talks( array_keys( $this->items ) );
 
 		foreach ( $this->items as $userid => $applicants ) {
-			$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
+			$style = '';
+
+			if ( 'missing_bio' === $this->status && in_array( $userid, $this->selected_items, true ) ) {
+				$style = ' class="status-wct_selected"';
+			}
+
 			echo "\n\t" . $this->single_row( $applicants, $style, '', $talks_count );
 		}
 	}
