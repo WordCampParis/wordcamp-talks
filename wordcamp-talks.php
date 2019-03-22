@@ -5,7 +5,7 @@ Plugin URI: https://github.com/WordCampParis/wordcamp-talks/
 Description: WordCamp Talk Proposals Management Tool
 Version: 1.3.0
 Requires at least: 4.6.1
-Tested up to: 5.0
+Tested up to: 5.2
 License: GNU/GPL 2
 Author: imath
 Author URI: http://imathi.eu/

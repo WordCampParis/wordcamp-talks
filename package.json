@@ -19,7 +19,7 @@
     "grunt-git-archive": "~0.0.3",
     "grunt-jsvalidate": "~0.2.2",
     "grunt-legacy-util": "^1.1.1",
-    "grunt-wp-i18n": "^1.0.2",
+    "grunt-wp-i18n": "^1.0.3",
     "matchdep": "^2.0.0"
   },
   "engines": {
