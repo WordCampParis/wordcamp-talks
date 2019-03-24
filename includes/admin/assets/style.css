@@ -210,11 +210,11 @@ body.post-type-{{{post-type}}} #wct-session-action a {
 
 #wordcamp-talks-mailer > ul li {
 	display: inline-block;
-	margin: 0 1em 0 0;
+	margin: 0 1em 0.5em 0;
 	background: #72777c;
-	padding: 0.5em 1em;
+	padding: 0.5em;
 	color: #fff;
-	font-weight: 600;
+	font-size: 80%;
 }
 
 #wordcamp-talks-mailer > label {

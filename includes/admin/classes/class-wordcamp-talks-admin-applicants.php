@@ -29,11 +29,21 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	public $status;
 
 	/**
+	 * Used to store selected applicants.
+	 *
+	 * @since 1.3.0
+	 * @var array
+	 */
+	private $selected_items = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.3.0
 	 */
 	public function __construct() {
+		add_screen_option( 'per_page', array( 'label' => _x( 'Applicants', 'Applicant items per page (screen options)', 'wordcamp-talks' ) ) );
+
 		// Define singular and plural labels, as well as whether we support AJAX.
 		parent::__construct( array(
 			'ajax'     => false,
@@ -79,25 +89,39 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 		if ( 'missing_bio' === $this->status ) {
 			$args['meta_key'] = 'description';
 			$args['meta_value'] = false;
-		} elseif ( '' !== $this->status ) {
-			$selected_talks = get_posts( array(
-				'numberposts' => '-1',
-				'post_type'   => wct_get_post_type(),
-				'post_status' => 'wct_selected',
+		}
+
+		// Get all talks to get all applicants.
+		$talks = get_posts( array(
+			'numberposts' => '-1',
+			'post_type'   => wct_get_post_type(),
+			'post_status' => array_keys( wct_get_statuses() ),
+		) );
+
+		// Make applicants unique.
+		$args['include'] = array_unique( wp_list_pluck( $talks, 'post_author' ) );
+
+		if ( '' !== $this->status ) {
+			// Get the selected speakers
+			$selected_speakers = array_unique( wp_filter_object_list(
+				$talks,
+				array( 'post_status' => 'wct_selected' ),
+				'and',
+				'post_author'
 			) );
 
-			$selected_users = array_unique( wp_list_pluck( $selected_talks, 'post_author' ) );
-
+			// Display all except speakers.
 			if ( 'not_selected' === $this->status ) {
-				$args['exclude'] = $selected_users;
-			} else {
+				$args['include'] = array_diff( $args['include'], $selected_speakers );
+
+			} elseif ( 'selected' === $this->status ) {
 				// Use a dummy role to display no applicants
-				if ( ! $selected_users ) {
+				if ( ! $selected_speakers ) {
 					$args['role'] = 'wct_dummy';
 
-				// Only display applicants with at least 1 selected talk.
+				// Only display speakers.
 				} else {
-					$args['include'] = $selected_users;
+					$args['include'] = $selected_speakers;
 				}
 			}
 		}
@@ -106,6 +130,10 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 		$applicants_search = new WP_User_Query( apply_filters( 'wct_applicants_list_table_args', $args ) );
 
 		$this->items = $applicants_search->get_results();
+
+		if ( isset( $selected_speakers ) ) {
+			$this->selected_items = array_map( 'intval', $selected_speakers );
+		}
 
 		$this->set_pagination_args(
 			array(
@@ -233,11 +261,15 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	 * @since 1.3.0
 	 */
 	public function display_rows() {
-        $style       = '';
-        $talks_count = _wct_count_many_users_talks( array_keys( $this->items ) );
+		$talks_count = _wct_count_many_users_talks( array_keys( $this->items ) );
 
 		foreach ( $this->items as $userid => $applicants ) {
-			$style = ( ' class="alternate"' == $style ) ? '' : ' class="alternate"';
+			$style = '';
+
+			if ( 'missing_bio' === $this->status && in_array( $userid, $this->selected_items, true ) ) {
+				$style = ' class="status-wct_selected"';
+			}
+
 			echo "\n\t" . $this->single_row( $applicants, $style, '', $talks_count );
 		}
 	}
@@ -267,6 +299,17 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	}
 
 	/**
+	 * Neutralizes row actions links for this list table.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param object $item        The item being acted upon.
+	 * @param string $column_name Current column name.
+	 * @param string $primary     Primary column name.
+	 */
+	protected function handle_row_actions( $item, $column_name, $primary ) {}
+
+	/**
 	 * Markup for the checkbox used to select applicants for bulk actions.
 	 *
 	 * @since 1.3.0
@@ -291,24 +334,29 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
 	 * @param object|null $applicants Applicant object.
 	 */
 	public function column_username( $applicants = null ) {
-		$avatar	= get_avatar( $applicants->user_email, 32 );
+		if ( wct()->admin->downloading_csv ) {
+			echo esc_html( $applicants->user_login );
 
-		$applicant = $applicants->user_login;
+		} else {
+			$avatar	= get_avatar( $applicants->user_email, 32 );
 
-		// Check if the user for this row is editable
-		if ( current_user_can( 'list_users' ) ) {
-			// Set up the user editing link
-			$applicant = sprintf( '<a href="%1$s">%2$s</a>',
-				esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $applicants->ID ) ) ),
-				$applicants->user_login
-			);
+			$applicant = $applicants->user_login;
+
+			// Check if the user for this row is editable
+			if ( current_user_can( 'list_users' ) ) {
+				// Set up the user editing link
+				$applicant = sprintf( '<a href="%1$s">%2$s</a>',
+					esc_url( add_query_arg( 'wp_http_referer', urlencode( wp_unslash( $_SERVER['REQUEST_URI'] ) ), get_edit_user_link( $applicants->ID ) ) ),
+					$applicants->user_login
+				);
+			}
+
+			echo $avatar . sprintf( '<strong>%s</strong><br/>', $applicant );
+
+			$actions = array();
+
+			echo $this->row_actions( $actions );
 		}
-
-		echo $avatar . sprintf( '<strong>%s</strong><br/>', $applicant );
-
-		$actions = array();
-
-		echo $this->row_actions( $actions );
 	}
 
 	/**
@@ -344,6 +392,11 @@ class WordCamp_Talks_Admin_Applicants extends WP_Users_List_Table {
         $talks_count = 0;
 
         if ( isset( $applicants->number_of_talks ) && $applicants->number_of_talks ) {
+			if ( wct()->admin->downloading_csv ) {
+				echo number_format_i18n( $applicants->number_of_talks );
+				return;
+			}
+
             $applicant_talks_url = add_query_arg(
                 array(
                     'post_type' => wct_get_post_type(),

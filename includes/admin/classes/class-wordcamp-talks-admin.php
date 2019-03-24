@@ -209,6 +209,9 @@ class WordCamp_Talks_Admin {
 
 			// Help tabs
 			add_filter( 'wct_get_help_tabs', array( $this, 'rates_help_tabs' ), 11, 1 );
+
+			// Applicants per page screen option
+			add_filter( 'set-screen-option', array( $this, 'set_admin_screen_options' ), 10, 3 );
 		}
 	}
 
@@ -1207,7 +1210,7 @@ class WordCamp_Talks_Admin {
 			// Get all talks
 			add_action( 'wct_admin_request', array( $this, 'get_talks_by_status' ), 10, 1 );
 
-			$html_list_table = _get_list_table( 'WP_Posts_List_Table' );
+			$html_list_table = self::get_list_table_class( 'WordCamp_Talks_Admin_Export_Talks', 'posts' );
 		}
 
 		$html_list_table->prepare_items();
@@ -2268,6 +2271,29 @@ class WordCamp_Talks_Admin {
 			wp_redirect( add_query_arg( 'paged', $total_pages ) );
 			exit;
 		}
+	}
+
+	/**
+	 * Sets the Applicants screen per_page option.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param bool     $keep   Whether to save or skip saving the screen option value. Default false.
+	 * @param string   $option The option name.
+	 * @param int      $value  The number of rows to use.
+	 */
+	public function set_admin_screen_options( $keep = true, $option = '', $value = 0 ) {
+		if ( 'talks_page_applicants_per_page' != $option ) {
+			return $keep;
+		}
+
+		// Per page.
+		$value = (int) $value;
+		if ( $value < 1 || $value > 999 ) {
+			return $keep;
+		}
+
+		return $value;
 	}
 
 	/**
