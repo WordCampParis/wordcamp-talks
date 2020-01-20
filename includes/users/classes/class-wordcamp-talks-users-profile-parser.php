@@ -36,7 +36,7 @@ class WordCamp_Talks_Users_Profile_Parser {
 			return new WP_Error( 'missing_parameter', __( 'The user name was not provided.', 'wordcamp-talks' ) );
 		}
 
-		$remote_url = wp_safe_remote_get( 'https://profiles.wordpress.org/' . sanitize_title( $username ), array(
+		$remote_url = wp_remote_get( 'https://profiles.wordpress.org/' . sanitize_title( $username ), array(
 			'timeout' => 30,
 			// Use an explicit user-agent for the plugin.
 			'user-agent' => 'WCTP Profile Parser (WordCamp Talk Proposals/' . $version . '); ' . get_bloginfo( 'url' )
@@ -47,7 +47,10 @@ class WordCamp_Talks_Users_Profile_Parser {
 		}
 
 		$useful_html_elements = array(
-			'title' => array(),
+			'link' => array(
+				'rel'  => true,
+				'href' => true,
+			),
 			'h2'    => array(
 				'class' => true,
 			),
@@ -81,9 +84,18 @@ class WordCamp_Talks_Users_Profile_Parser {
 			return array( 'errors' => $source_content->get_error_messages() );
 		}
 
-		$check_title = preg_match_all( '/<title>([^"]+)<\/title>/', $source_content, $title_matches );
+		$check_link     = preg_match_all( '/<link\srel=\"(.*)\"\s*href=("[^"]+"|\'[^\']+\'|[^<>\s]+)/i', $source_content, $link_matches );
+		$check_username = '';
 
-		if ( empty( $title_matches[1] ) || false === strpos( $title_matches[1][0], 'Profile' ) ) {
+		if ( isset( $link_matches[1] ) ) {
+			$profile_index = array_search( 'canonical', $link_matches[1] );
+
+			if ( false !== $profile_index && isset( $link_matches[2][ $profile_index ] ) ) {
+				$check_username = trim( str_replace( 'https://profiles.wordpress.org/', '', $link_matches[2][ $profile_index ] ), '/"' );
+			}
+		}
+
+		if ( $username !== $check_username ) {
 			return array( 'errors' => new WP_Error( 'unknown_profile', sprintf( __( '%s is not a valid user name on WordPress.org', 'wordcamp-talks' ), $username ) ) );
 		}
 
